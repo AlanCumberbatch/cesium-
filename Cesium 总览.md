@@ -2,8 +2,11 @@
 
 ### 写这个文档的初衷
 &emsp;&emsp;一开始确实想写一个对于前端开发者友好的Cesium教程，但是自己现在对于 Cesium 的了解确实不足够，所以先算作自我学习吧。同时也希望自己的记录能够帮助公司接下来入职的同时快速上手相关项目。至于教程，之后相关内容都了解之后，会从头来过，仔细梳理的，如果能够帮助到别人，还是很开心的。
+&emsp;&emsp;我的工作中对源码的理解需求更大一些，所以内容会更偏向源码的解读，存在片面性，会慢慢补全。
 ### Cesium 从 0 到 1
 <!-- ###### 刚才冒出来一个思路：可以依照 cesium 项目从0到1的过程来学习，毕竟这段时间上班确实也就是看文档了。那就全身心的看看。 -->
+#### WHAT 尝试+感受：Cesium 创造了什么
+
 > [Cesium系统学习整理 - 作者：鱼吃鱼罐头，来源：博客园](https://www.cnblogs.com/yxd000/p/13743778.html)
   1. Cesium 的概念定义
     Cesium是国外一个**基于JavaScript**编写的使用WebGL**的地图引擎**。
@@ -15,19 +18,70 @@
     在 github 上将项目现在到本地，建议下载最新版本，而后进行本地饮用:🚰:。
     关于配置环境，对于前端来说，nodejs的环境必须要有的。安装好node后，直接在终端中进入到Cesium项目的根文件，而后命令行输入http-server进行http服务的环境搭建的，然后就可以写出Cesium的第一例子了。
   3. Cesium的第一个实例
+     1. How
+        - 安装好 node
+        - 下载项目
+        - npm i
+        - 编译一下：
+            * npm run combine 生成 Build/CesiumUnminified，会把所有Source文件夹中所有文件合并到一个Cesium.js中去，并且不会去掉注释。这样可以方便发布版本之前的调
+            * npm run generateDocumentation 只生成文档
+            * npm run minifyRelease 生成 Build/Cesium，生成的Cesium.js文件中的调试信息会被去除，并且进行了压缩，是可以部署到生成环境中的版本。
+            * ⚠️ **npm run release** 则相当于以上三个命令的集合：即combine + minifyRelease + generateDocumentation。
+        - 参照 Hello World.html 创建一个 html 文件，路径只要自己能找到就行，但是为了省事儿，我创建在同级目录了。
+        - 在 Cesium 1.83 项目根目录下 输入命令行： http-serve
+        - 在浏览器中输入对应url，建议谷歌浏览器
+     2. html 文件案例：
+        ```
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+            <title>CesiumTest</title>
+            <!-- *A: 引入打包后的 Cesium 文件 -->
+            <script src="../Build/Cesium/Cesium.js"></script>
+            <style>
+              /*  *B: 引入 Cesium.widget 的 css 文件 */
+              @import url(../Build/Cesium/Widgets/widgets.css);
+              html,
+              body,
+              #cesium_container {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+              }
+            </style>
+          </head>
+          <body>
+            <!-- *C： 创建容纳 Cesium 的盒子 -->
+            <div id="cesium_container"></div>
+            <script>
+              //*D: new Cesium.Viewer，即可创建一个地球出来
+              var viewer = new Cesium.Viewer('cesium_container');
+            </script>
+          </body>
+          </html>
+        ```
+
+#### WHY 分析：Cesium 怎么创造的
+&emsp;**一切开始于  *var viewer = new Cesium.Viewer('cesium_container');*  。**<br/>
+
+&emsp;##### 那么从这里开始<br/>
+&emsp;&emsp; [ ] **new [Cesium.Viewer](Cesium-Viewer.md)('cesium_container')** : [Cesium.Viewer](Cesium-Viewer.md)
+
+<br/>
+<br/>
+<br/>
+<br/>
+
 1. 表情符号
   - :+1:
   - :shipit:
-2. 相关文档
-  - [ ] [Entity](Cesium-Entity.md)
-    - [x] [Event](Cesium-Event.md)
-  - [ ] [Primitive](Cesium-Primitive.md)
 
-<!-- Primitive -->
 
-* [Entity](Cesium-Entity.md)
-  * [x] [Event](Cesium-Event.md)
-* [Primitive](Cesium-Primitive.md)
 
 > 参考：
 > - [Cesium开发笔记 - 作者：vtxf, 来源：知乎](https://zhuanlan.zhihu.com/p/80904975)
