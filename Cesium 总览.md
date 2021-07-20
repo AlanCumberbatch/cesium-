@@ -1,12 +1,12 @@
 # **Cesium 总览**
 ### Cesium 初步
-1.组织架构图
-2.具体内容
-3.相互联系
+1. 组织架构图
+2. 具体内容
+3. 相互联系
   - :+1:
   - :shipit:
 
-4.相关文档
+4. 相关文档
   - [ ] [Entity](Cesium-Entity.md)
     - [x] [Event](Cesium-Event.md)
   - [ ] [Primitive](Cesium-Primitive.md)
