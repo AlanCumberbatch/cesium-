@@ -14,6 +14,7 @@
 <!-- Primitive -->
 
 *[Entity](Cesium-Entity.md)
+  * [x] [Event](Cesium-Event.md)
 *[Primitive](Cesium-Primitive.md)
 
 > 参考：
