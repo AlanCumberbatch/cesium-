@@ -6,9 +6,9 @@
   - :+1:
   - :shipit:
 4.相关文档
-  - [] [Entity](Cesium-Entity.md)
+  - [ ] [Entity](Cesium-Entity.md)
     - [x] [Event](Cesium-Event.md)
-  - [] [Primitive](Cesium-Primitive.md)
+  - [ ] [Primitive](Cesium-Primitive.md)
 <!-- Primitive -->
 *[Entity](Cesium-Entity.md)
 *[Primitive](Cesium-Primitive.md)
