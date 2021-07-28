@@ -29,14 +29,14 @@
   ArcGIS API forJavaScript 4. x 系列为 Esri 公司基于 WebGL 与 HTML5 技术开发，但其调用的三维场景资源数据格式小众， 需借助 ArcGIS Pro 发布， 且为付费软件。
   Cesium 是 AGI 公司于 2011 年开发的一款支持 Web GL 的免费 JavaScript 库函数，它能够在不添加插件的情况下基于多种浏览器和 mobile 进行网页端的可视化展示，其框架页面如下图所示。  <br/>
 
-  &emsp;&emsp;&emsp;![Cesium三维可视化场景界面](cesium_frame_00.png)  <br/>
+  &emsp;&emsp;&emsp;![Cesium三维可视化场景界面](./images/cesium_frame_00.png)  <br/>
 
   地图能够以二维、三维的形式进行展示，同时支持调用 [OGC（Open Geospatial Consortium）地理信息联盟](https://www.osgeo.org/partners/ogc/)指定的空间数据服务规范下的 [WMS](https://www.ogc.org/standards/wms)、[WMTS](https://www.ogc.org/standards/wmts)、[ArcGIS](https://enterprise.arcgis.com/zh-cn/server/latest/publish-services/linux/ogc-support-in-arcgis-server.htm)等多种地图服务图层
   三维球体上能够进行点、线、面、体等实体的创建、glTF/glb 三维模型的加载以及基于时间轴进行动画模拟等的动态效果等其他功能实现，Cesium 于 2016 年推出了 3D Tiles 格式规范后，三维地球也能够支持对 [倾斜摄影](https://blog.csdn.net/wangbiao9292/article/details/93499988)、[点云](https://blog.csdn.net/qq_42899245/article/details/116521688)等大型模型数据的加载。([**附**：WFS,WMS,WMTS 简单对比,并结合OGC的使用说明](https://doc.arcgis.com/zh-cn/arcgis-online/reference/ogc.htm))。
 
   Cesium 按照其功能层级不同，由下到上可主要分为核心层、渲染器层、场景层和动态场景层四层。
 
-  &emsp;&emsp;&emsp;![Cesium功能层级体系](cesium_frame_01.png)
+  &emsp;&emsp;&emsp;![Cesium功能层级体系](./images/cesium_frame_01.png)
 
        - 核心层：提供基本的数学运算法则，如投影、坐标转换、各种优化算法等；
        - 渲染器层：对 WebGL 进行封装，其包括了内置 GLSL 功能、着色器的表示、纹理、渲染状态等；
@@ -48,7 +48,7 @@
       本地 Cesium 系统架构采用流行的  ***B/S（浏览器/服务器）*** 架构方式。 <br/>
       根据各个层次实现的功能的不同，系统整体可分为客户层、服务层以及数据存储层三个层次。
 
-      &emsp;&emsp;&emsp;![Cesium系统架构](cesium_frame_02.png)
+      &emsp;&emsp;&emsp;![Cesium系统架构](./images/cesium_frame_02.png)
 
       - 客户层
 
@@ -77,11 +77,11 @@
 
   2. Cesium 类的层次结构
 
-     &emsp;&emsp;&emsp;![Cesium中类的层次结构](cesium_frame_03.png)
+     &emsp;&emsp;&emsp;![Cesium中类的层次结构](./images/cesium_frame_03.png)
 
      其中一些关键函数类，对其解释说明如下所示:
 
-      &emsp;&emsp;&emsp;![Cesium函数功能说明](cesium_frame_04.png)
+      &emsp;&emsp;&emsp;![Cesium函数功能说明](./images/cesium_frame_04.png)
 
       - Viewer：Cesium 的基础类也是核心类，一方面定义 viewer 对象在 HTML 创建的关联 ID 的 div 元素中创建一个虚拟三维球体，地图添加、模型加载、实体创建及功能的实现都基于此 div，另外的功能则是基于原生 Cesium 的诸如fullscreenButton、vrButton、infoxBox 等相关组件调用实现。
       - ScreenSpaceEventHandler：响应鼠标点击事件，通过对鼠标定义左、右键或者双击等方式为鼠标动作创建一个监听，通过 pick 屏幕坐标位置获取到添加实体或矢量，实现诸如高亮等功能；
@@ -107,7 +107,7 @@
 
       Cesium 在运行实例时，需要使用着色器管道来生成着色器，以及一个包含 uniform单元与函数的 GLSL 库， **Renderer** 对 WebGL 相关功能进行了封装，这样做的目的是比直接使用 WebGL 更易于使用。Cesium 图形渲染器架构如图所示。
 
-      &emsp;&emsp;&emsp;![Cesium中渲染器结构](cesium_frame_05.png)
+      &emsp;&emsp;&emsp;![Cesium中渲染器结构](./images/cesium_frame_05.png)
 
       //* 图中英文单词注解：
         - Vertex - 顶点，结合WebGL的基础知识，所有的模型都是由三角形拼凑而成的，所以需要知道顶点；
