@@ -27,7 +27,7 @@
             * npm run minifyRelease 生成 Build/Cesium，生成的Cesium.js文件中的调试信息会被去除，并且进行了压缩，是可以部署到生成环境中的版本。
             * ⚠️ **npm run release** 则相当于以上三个命令的集合：即combine + minifyRelease + generateDocumentation。
         - 参照 Hello World.html 创建一个 html 文件，路径只要自己能找到就行，但是为了省事儿，我创建在同级目录了。
-        - 在 Cesium 1.83 项目根目录下 输入命令行： http-serve
+        - 在 Cesium 1.83 项目根目录下 输入命令行： http-server
         - 在浏览器中输入对应url，建议谷歌浏览器
 
       <br/>

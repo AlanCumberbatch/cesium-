@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+  <title>CesiumTest</title>
+  <!-- *A: 引入打包后的 Cesium 文件 -->
+  <script src="../Build/Cesium/Cesium.js"></script>
+  <style>
+    /*  *B: 引入 Cesium.widget 的 css 文件 */
+    @import url(../Build/Cesium/Widgets/widgets.css);
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <button id="toggle-building">Toggle new building</button>
+  <script>
+    // Your access token can be found at: https://cesium.com/ion/tokens.
+    // This is the default access token from your ion account
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+
+    // Keep your Cesium.Ion.defaultAccessToken = 'your_token_here' line above.
+    // STEP 2 CODE
+    // Initialize the viewer with Cesium World Terrain.
+    const viewer = new Cesium.Viewer('cesiumContainer', {
+      terrainProvider: Cesium.createWorldTerrain()
+    });
+    // Add Cesium OSM Buildings.
+    const buildingsTileset = viewer.scene.primitives.add(Cesium.createOsmBuildings());
+    // Fly the camera to Denver, Colorado at the given longitude, latitude, and height.
+    viewer.camera.flyTo({
+      destination: Cesium.Cartesian3.fromDegrees(-104.9965, 39.74248, 4000)
+    });
+
+    // STEP 3: Identify the new building area --->
+    // STEP 3 CODE
+    async function addBuildingGeoJSON() {
+      // Load the GeoJSON file from Cesium ion.
+      const geoJSONURL = await Cesium.IonResource.fromAssetId(530288);
+      // Create the geometry from the GeoJSON, and clamp it to the ground.
+      const geoJSON = await Cesium.GeoJsonDataSource.load(geoJSONURL, { clampToGround: true });
+      // Add it to the scene.
+      const dataSource = await viewer.dataSources.add(geoJSON);
+      // By default, polygons in CesiumJS will be draped over all 3D content in the scene.
+      // Modify the polygons so that this draping only applies to the terrain, not 3D buildings.
+      for (const entity of dataSource.entities.values) {
+        entity.polygon.classificationType = Cesium.ClassificationType.TERRAIN;
+      }
+      // Move the camera so that the polygon is in view.
+      viewer.flyTo(dataSource);
+    }
+    addBuildingGeoJSON();
+
+    // Now that we’ve identified where the new building will go, we can see which buildings are currently there
+
+    // STEP 4 CODE
+    // Hide individual buildings in this area using 3D Tiles Styling language.
+    buildingsTileset.style = new Cesium.Cesium3DTileStyle({
+      // Create a style rule to control each building's "show" property.
+      show: {
+        conditions : [
+          // Any building that has this elementId will have `show = false`.
+          ['${elementId} === 332469316', false],
+          ['${elementId} === 332469317', false],
+          ['${elementId} === 235368665', false],
+          ['${elementId} === 530288180', false],
+          ['${elementId} === 530288179', false],
+          ['${elementId} === 532245203', false],
+          // If a building does not have one of these elementIds, set `show = true`.
+          [true, true]
+        ]
+      },
+      // Set the default color style for this particular 3D Tileset.
+      // For any building that has a `cesium#color` property, use that color, otherwise make it white.
+      color: "Boolean(${feature['cesium#color']}) ? color(${feature['cesium#color']}) : color('#ffffff')"
+    });
+
+    // Step 6： Upload and position the new building
+    // 下载 glTF格式的文件后，添加到 Cesium.ion 的仓库里，同时，对齐摆位置和俯仰方位进行精确设置
+
+    // Step 7: Add the new building to the scene
+    // STEP 7 CODE
+    // Add the 3D Tileset you created from your Cesium ion account.
+    const newBuildingTileset = viewer.scene.primitives.add(
+      new Cesium.Cesium3DTileset({
+        url: Cesium.IonResource.fromAssetId(530293)
+      })
+    );
+    // Move the camera to the new building.
+    viewer.flyTo(newBuildingTileset);
+
+    // Step 8: Add a button to toggle the new building
+    // STEP 8 CODE
+    // Toggle the tileset's show property when the button is clicked.
+    document.querySelector('#toggle-building').onclick = function() {
+      newBuildingTileset.show = !newBuildingTileset.show;
+    };
+
+    // Step 9: Consider the building’s impact on its surroundings
+
+
+  </script>
+</body>
+</html>
