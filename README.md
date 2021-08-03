@@ -8,4 +8,4 @@
 ## [Cesium 源码分析初步](cesium_miniature/0_TO_1_about/index.md)
 <!-- ## [Cesium 源码分析初步](Cesiumm_sourceCode_analyse.md) -->
 
-## [Ceiusm文档观看记录](cesium_tutorial/cesium_chineseSite/index.md)
+## [Ceiusm文档观看记录](cesium_tutorial/READEME.md)
