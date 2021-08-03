@@ -57,7 +57,7 @@ if (!defined(dataSourceCollection)) {<br/>
 
 var ~~<font color=orange>dataSourceDisplay</font>~~ = new [<font color=green>DataSourceDisplay</font>](#font-colorgreendatasourcedisplayfont)({<br/>
 &emsp;scene: scene,<br/>
-&emsp;dataSourceCollection: [dataSourceCollection](0_TO_1_about/dataSourceCollection.md),<br/>
+&emsp;dataSourceCollection: [dataSourceCollection](dataSourceCollection.md),<br/>
 });<br/>
 <br/>
 <br/>
@@ -285,7 +285,7 @@ Object.defineProperties(Entity.prototype, {
 
 <br/>
 
-# [**<font color=skyblue>##createPropertyTypeDescriptor</font>**](0_TO_1_about/createPropertyTypeDescriptor.md)
+# [**<font color=skyblue>##createPropertyTypeDescriptor</font>**](createPropertyTypeDescriptor.md)
 
 
 # **<font color=skyblue>##merge</font>**
