@@ -1,4 +1,5 @@
-将对应的例子放到 [Glitch](https://glitch.com/edit/#!/daisy-rocky-hip?path=index.html%3A125%3A16) 去执行即可，也可放到 Cesium 项目中的 ./Apps/Hello World.html 同级目录下<br/>
+将对应的例子放到 Glitch<a href="https://glitch.com/edit/#!/daisy-rocky-hip?path=index.html%3A125%3A16" target="_blank">:arrow_upper_right:</a>
+去执行即可，也可放到 Cesium 项目中的 ./Apps/Hello World.html 同级目录下<br/>
 <br/>
 
 # Getting Start
@@ -22,4 +23,6 @@
     The Entity API exposes a set of consistently designed high-level objects that aggregate related visualization and information into a unified data structure, which we call an Entity.
 
     [For detial](https://cesium.com/learn/cesiumjs-learn/cesiumjs-creating-entities/)
+
+    <font color=orange>看到这里，我觉得我更过的应该关注 Entity中是如何使用 Primitive API 的,最终落在 Primitive API 开发上</font>
   -
