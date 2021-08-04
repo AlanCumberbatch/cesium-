@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+  <title>CesiumTest</title>
+  <!-- *A: 引入打包后的 Cesium 文件 -->
+  <script src="../Build/Cesium/Cesium.js"></script>
+  <style>
+    /*  *B: 引入 Cesium.widget 的 css 文件 */
+    @import url(../Build/Cesium/Widgets/widgets.css);
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+    <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+    //*D: new Cesium.Viewer，即可创建一个地球出来
+    // Initialize the Cesium Viewer in the HTML element with the "cesiumContainer" ID.
+    /*
+      * about_Polygon, about_ellipse 和 about_Polyline 不要同时执行非常影响效果, cause viewer.zoomTo shouldn't be executed more than one time in one doc.
+    */
+    var viewer = new Cesium.Viewer('cesiumContainer');
+
+    // Polygon
+    var about_Polygon = ()=>{
+      var wyoming = viewer.entities.add({
+        polygon : {
+          hierarchy : Cesium.Cartesian3.fromDegreesArray([
+                                    -109.080842,45.002073,
+                                    -105.91517,45.002073,
+                                    -104.058488,44.996596,
+                                    -104.053011,43.002989,
+                                    -104.053011,41.003906,
+                                    -105.728954,40.998429,
+                                    -107.919731,41.003906,
+                                    -109.04798,40.998429,
+                                    -111.047063,40.998429,
+                                    -111.047063,42.000709,
+                                    -111.047063,44.476286,
+                                    -111.05254,45.002073]),
+          height : 0,
+          material : Cesium.Color.RED.withAlpha(0.5),
+          outline : true,
+          outlineColor : Cesium.Color.BLACK
+        }
+      });
+
+      viewer.zoomTo(wyoming);
+
+      // Heights and extrusions
+
+      // A - placed at altitude
+      // the height property (in meters)
+      // raises the polygon to 250,000 meters above the earth
+      // after setting the height,  wyoming would still conform to the curvature of the WGS84 ellipsoid.
+      wyoming.polygon.height = 200000;
+      // B - To extrude the shape into a volume, by setting the extrudedHeight property.
+      wyoming.polygon.extrudedHeight = 250000;
+      /*
+        * Tips:
+        *   - The volume will be created between height and extrudedHeight.
+        *   - If height is undefined, the volume starts at 0.
+        *   - this example is going to Create a volume that starts at 200,000 meters and extends to 250,000 meters.
+      */
+
+    };
+    // about_Polygon()
+
+    var about_ellipse = () =>{
+
+      var entity = viewer.entities.add({
+        name:'blue_ellipse',
+        position: Cesium.Cartesian3.fromDegrees(-103.0, 40.0),
+        ellipse : {
+          semiMinorAxis : 250000.0,
+          semiMajorAxis : 400000.0,
+          material : Cesium.Color.BLUE.withAlpha(0.5)
+        }
+      });
+      // snowflake_particle
+      viewer.zoomTo(entity);
+
+      var ellipse = entity.ellipse; // For upcoming examples
+
+      // AAAAAAAA
+      //* can also specify a url to an image instead of a color.
+      // Images:
+      // Failed: cause can not find the img  // ellipse.material = 'https://www.google.com/logos/doodles/2021/get-vaccinated-wear-a-mask-save-lives-august-4-6753651837109295-s.png';
+      // ellipse.material = './SampleData/snowflake_particle.png';
+      // ellipse.material = './jpg.jpeg';// jpg -OK ,会自动居中
+      // ellipse.material = './js_float.png';// png -OK
+      //ellipse.material = './cdcdcdcd.gif';// gif ,可以显示，但是不能动了
+      // ellipse.material = './svg.svg';// svg -OK
+
+      // Checkerboard:
+      // ellipse.material = new Cesium.CheckerboardMaterialProperty({
+      //   evenColor : Cesium.Color.WHITE,
+      //   oddColor : Cesium.Color.BLACK,
+      //   repeat : new Cesium.Cartesian2(4, 4)
+      // });
+
+      // Stripe
+      // ellipse.material = new Cesium.StripeMaterialProperty({
+      //   evenColor : Cesium.Color.WHITE,
+      //   oddColor : Cesium.Color.BLACK,
+      //   repeat : 32
+      // });
+
+      // Grid
+      ellipse.material = new Cesium.GridMaterialProperty({
+        color : Cesium.Color.YELLOW,
+        cellAlpha : 0.2,
+        lineCount : new Cesium.Cartesian2(8, 8),
+        lineThickness : new Cesium.Cartesian2(2.0, 2.0)
+      });
+
+
+      // BBBBBBB
+      // Outlines
+      ellipse.fill = false;// 决定 outline 内部是否进行 内容 填充
+      ellipse.outline = true;
+      ellipse.outlineColor = Cesium.Color.YELLOW;
+      ellipse.outlineWidth = 20000000.0;
+    }
+    // about_ellipse();
+
+    // Polylines ----> !!!! 为什么 position 在这儿的时候 放在了 Polyline 的option里面了，在ellipse的时候放在外面了
+    var about_Polyline = ()=>{
+      var entity = viewer.entities.add({
+        polyline : {
+          positions : Cesium.Cartesian3.fromDegreesArray([-77, 35, -77.1, 35]),
+          width : 5,
+          material : Cesium.Color.RED
+        }
+      });
+      viewer.zoomTo(viewer.entities);
+
+      var polyline = entity.polyline // For upcoming examples
+
+      // Polyline outline
+      polyline.material = new Cesium.PolylineOutlineMaterialProperty({
+        color : Cesium.Color.ORANGE,
+        outlineWidth : 3,
+        outlineColor : Cesium.Color.BLACK
+      });
+
+      // Polyline glow
+      polyline.material = new Cesium.PolylineGlowMaterialProperty({
+        glowPower : 0.2,
+        color : Cesium.Color.BLUE
+      });
+    }
+    // about_Polyline();
+
+
+    </script>
+</body>
+</html>
