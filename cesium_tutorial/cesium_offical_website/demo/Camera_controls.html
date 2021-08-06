@@ -55,33 +55,32 @@
 
   viewer.zoomTo(wyoming);
 
-  wyoming.name = 'wyoming';
-  // wyoming.id = 'wyoming';//!id 不能在外面进行设置，不会生效
-  wyoming.description = '\
-  <img\
-    width="50%"\
-    style="float:left; margin: 0 1em 1em 0;"\
-    src="./Flag_of_Wyoming.png"/>\
-  <p>\
-    Wyoming is a state in the mountain region of the Western \
-    United States.\
-  </p>\
-  <p>\
-    Wyoming is the 10th most extensive, but the least populous \
-    and the second least densely populated of the 50 United \
-    States. The western two thirds of the state is covered mostly \
-    with the mountain ranges and rangelands in the foothills of \
-    the eastern Rocky Mountains, while the eastern third of the \
-    state is high elevation prairie known as the High Plains. \
-    Cheyenne is the capital and the most populous city in Wyoming, \
-    with a population estimate of 63,624 in 2017.\
-  </p>\
-  <p>\
-    Source: \
-    <a style="color: WHITE"\
-      target="_blank"\
-      href="http://en.wikipedia.org/wiki/Wyoming">Wikpedia</a>\
-  </p>';
+  // Camera controls
+  var heading = Cesium.Math.toRadians(90);
+  var pitch = Cesium.Math.toRadians(-30);
+  viewer.zoomTo(wyoming, new Cesium.HeadingPitchRange(heading, pitch));
+
+  // 和 #56，#61 可以同时运行，最终展示效果 取决于 当前处于最后位置的 flyTo -----之所以这样的原因初步推断是因为zoomTo,flyTo都是异步的，再细节就得看代码了
+  // 运行效果：存在一个跳转动画，当达到预定的位置后 wyoming 这个entity 直接就是被选中的状态，infoBox 也出现了。
+  // flies to Wyoming and selects it after the flight is completed.
+  viewer.flyTo(wyoming).then(function(result){
+    /*
+      * The resulting parameter passed to our callback function will be
+      *   true if the flight completed successfully
+      *   or
+      *   false if the flight was canceled
+    */
+    if (result) {
+        viewer.selectedEntity = wyoming;
+    }
+  });
+
+  // 当我们想让相机的中心固定在某个 entity 上的时候，调取 viewer.trackedEntity 方法，并将 该 entity 赋值给它。⚠️ entity.position 必须有值
+  wyoming.position = Cesium.Cartesian3.fromDegrees(-107.724, 42.68);
+  viewer.trackedEntity = wyoming;//有了这句话之后，上面的所有 zoomTo,flyTo 都不生效了。这个是为什么呢？？？
+
+  // Stop tracking by setting viewer.trackedEntity to undefined or by double clicking away from the entity.
+  // Calling zoomTo or flyTo will also cancel tracking.---》如果设置 viewer.trackedEntity 之后，调取了 flyTo, zoomTo 的话，track 就会失效，会执行 flyTo,zoomTo,这个之后好好研究研究
 
   </script>
 </body>
