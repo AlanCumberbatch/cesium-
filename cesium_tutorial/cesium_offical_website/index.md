@@ -65,5 +65,28 @@ Put the innerHTML of demo's body in Gitch <a href="https://glitch.com/edit/#!/da
         - <font color=orange>sandboxed</font> [:link:](https://en.wikipedia.org/wiki/Sandbox_(computer_security))
         - <font color=orange>injecting</font> /ɪn'dʒɛkt/ vt. 注射；注入
         - <font color=orange>malicious</font> /mə'lɪʃəs/ adj. 恶意的, 恶毒的 --> adv: maliciously
+    - Camera controls
+      - Use the viewer.zoomTo command to view a particular entity. There is also a viewer.flyTo method that performs an animated camera flight to the entity. Both of these methods can be passed ***to an Entity, EntityCollection, a DataSource, or an array of entities***.
+      - Either method calculates a view of all provided entities.
+      - (some Camera default settings) By default, the camera is oriented north and is looking down from a 45 degree angle. Customize this by passing in a HeadingPitchRange.
+      - Both zoomTo and flyTo are asynchronous functions; that is, they are not guaranteed to have completed before they return. For example, flying to an entity happens over many animation frames. Both of these functions return Promises that can be used to schedule a function to be executed after the flight or zoom is completed.
+      - new words to learn
+        - <font color=orange>animated</font> /'ænə'metɪd/ adj. 1.活生生的；栩栩如生的  **2.生气勃勃的；活跃的；热烈的**  3.被赋予生命的；被赋予生命特征的   4.(影片等)以动画形式制作的   adv. 5.栩栩如生地；活跃地  n. 6.卡通片,动画片  7.动画片,卡通片
+        - <font color=orange>oriented</font> /'orɪɛntɪd/ adj. 导向的
+        - <font color=orange>asynchronous</font> /ei'siŋkrənəs/ adj. 异步的
+        - <font color=orange>initiated</font> /ɪ'nɪʃɪet/ vt. 开始，创始；发起；使初步了解  n. 开始；新加入者，接受初步知识者  adj. 新加入的；接受初步知识的
+        - <font color=orange>corresponding</font> /ˌkɔrə'spɑndɪŋ/ adj. 1.相当的, 对应的  2.符合的, 一致的
+        - <font color=orange>visualization</font> /ˌvɪ ʒʊəlɪˈzeʃən/ n. 形象(化);形象化;想像
+    - Managing entities---things about EntityCollection
+      - viewer.entities is an EntityCollection
+      - EntityCollection is an associative array for managing and monitoring a group of entities
+      - key attributes
+        - add
+        - [collectionChanged](https://cesium.com/learn/cesiumjs/ref-doc/EntityCollection.html#getOrCreateEntity) = new Event();
+          - funciton: This notifies listeners when an entity has been added, removed, or updated in the collection.
+          - [for detial - related source code analyse](../../cesium_miniature/about_sourceCode/EntityCollection.collectionChanged.md)
+      - new words to learn
+        - <font color=orange>retrieve</font> /rɪ'triv/ vt. 寻回, 找回  恢复, 挽回   检索(储存的信息)  使某事物恢复旺盛状态   vt. & vi. (指经过训练的狗)找到并衔回(被打死或打伤的鸟等)
+
 
 

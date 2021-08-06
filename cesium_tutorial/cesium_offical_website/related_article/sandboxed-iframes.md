@@ -1,1 +1,1 @@
-> [website article](https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/)
+> [Play safely in sandboxed IFrames](https://www.html5rocks.com/en/tutorials/security/sandboxed-iframes/)
