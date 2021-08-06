@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+  <title>CesiumTest</title>
+  <!-- *A: 引入打包后的 Cesium 文件 -->
+  <script src="../Build/Cesium/Cesium.js"></script>
+  <style>
+    /*  *B: 引入 Cesium.widget 的 css 文件 */
+    @import url(../Build/Cesium/Widgets/widgets.css);
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+  Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+  //*D: new Cesium.Viewer，即可创建一个地球出来
+  // Initialize the Cesium Viewer in the HTML element with the "cesiumContainer" ID.
+  var viewer = new Cesium.Viewer('cesiumContainer');
+
+  //! 没有 position 如何成功放在地球表面的？？？默认值？？值得自己好好研究研究
+  var wyoming = viewer.entities.add({
+    id:'wyoming',
+    polygon : {
+      hierarchy : Cesium.Cartesian3.fromDegreesArray([
+                                -109.080842,45.002073,
+                                -105.91517,45.002073,
+                                -104.058488,44.996596,
+                                -104.053011,43.002989,
+                                -104.053011,41.003906,
+                                -105.728954,40.998429,
+                                -107.919731,41.003906,
+                                -109.04798,40.998429,
+                                -111.047063,40.998429,
+                                -111.047063,42.000709,
+                                -111.047063,44.476286,
+                                -111.05254,45.002073]),
+      height : 0,
+      material : Cesium.Color.RED.withAlpha(0.5),
+      outline : true,
+      outlineColor : Cesium.Color.BLACK
+    }
+  });
+
+  viewer.zoomTo(wyoming);
+
+  wyoming.name = 'wyoming';
+  // wyoming.id = 'wyoming';//!id 不能在外面进行设置，不会生效
+  wyoming.description = 'nothing';
+
+  /**
+   * Returns the top-most entity at the provided window coordinates
+   * or undefined if no entity is at that location.
+   *
+   * @param {Cartesian2} windowPosition The window coordinates.
+   * @returns {Entity} The picked entity or undefined.
+   */
+  function pickEntity(viewer, windowPosition) {
+    var picked = viewer.scene.pick(windowPosition);
+    if (defined(picked)) {
+      var id = Cesium.defaultValue(picked.id, picked.primitive.id);//! 这句话为什么会怎么写？？？
+      if (id instanceof Cesium.Entity) {
+        return id;
+      }
+    }
+    return undefined;
+  };
+
+  /**
+   * Returns the list of entities at the provided window coordinates.
+   * The entities are sorted front to back by their visual order.
+   *
+   * @param {Cartesian2} windowPosition The window coordinates.
+   * @returns {Entity[]} The picked entities or undefined.
+   */
+  function drillPickEntities(viewer, windowPosition) {
+    var i;
+    var entity;
+    var picked;
+    var pickedPrimitives = viewer.scene.drillPick(windowPosition);
+    var length = pickedPrimitives.length;
+    var result = [];
+    var hash = {};
+
+    for (i = 0; i < length; i++) {
+      picked = pickedPrimitives[i];
+      entity = Cesium.defaultValue(picked.id, picked.primitive.id);
+      if ( entity instanceof Cesium.Entity && !Cesium.defined(hash[entity.id]) ) {
+        result.push(entity);
+        hash[entity.id] = true;
+      }
+    }
+
+    return result;
+  };
+
+  </script>
+</body>
+</html>

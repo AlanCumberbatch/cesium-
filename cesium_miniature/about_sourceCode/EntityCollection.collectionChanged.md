@@ -1,18 +1,11 @@
 ## 结论
 
-![jielun](../../images/EntityCollection_collectionChanged.jpg)
+![EntityCollection_collectionChanged](../../images/EntityCollection_collectionChanged.jpg)
 
 ## 当前文件路径：cesium/Source/DataSources/EntityCollection.js
 
 ```js
 Object.defineProperties(EntityCollection.prototype, {
-  /**
-   * Gets the event that is fired when entities are added or removed from the collection.
-   * The generated event is a {@link EntityCollection.collectionChangedEventCallback}.
-   * @memberof EntityCollection.prototype
-   * @readonly
-   * @type {Event}
-   */
   collectionChanged: {
     get: function () {
       return this._collectionChanged;//was declared when initialization of EntityCollection
@@ -23,18 +16,12 @@ Object.defineProperties(EntityCollection.prototype, {
 
 });
 ```
+
 <br/>
 <br/>
 <br/>
 
 ```js
-/**
- * An observable collection of {@link Entity} instances where each entity has a unique id.
- * @alias EntityCollection
- * @constructor
- *
- * @param {DataSource|CompositeEntityCollection} [owner] The data source (or composite entity collection) which created this collection.
- */
 function EntityCollection(owner) {
 
   this._collectionChanged = new Event();//! was used in function fireChangedEvent only only only
@@ -88,20 +75,13 @@ function fireChangedEvent(collection) {
       collection._firing = false;
     }
   }
+
 }
 ```
 
 ### **<font color=red>从 EntityCollection.prototype.add 入手研究 fireChangedEvent 到底干了什么</font>**
 
 ```js
-
-/**
- * Add an entity to the collection.
- *
- * @param {Entity | Entity.ConstructorOptions} entity The entity to be added.
- * @returns {Entity} The entity that was added.
- * @exception {DeveloperError} An entity with <entity.id> already exists in this collection.
- */
 EntityCollection.prototype.add = function (entity) {
   //>>includeStart('debug', pragmas.debug);
   if (!defined(entity)) {
@@ -170,26 +150,11 @@ function updateShow(entity, children, isShowing) {
 }
 
 Object.defineProperties(Entity.prototype, {
-
-  /**
-   * Gets the event that is raised whenever a property or sub-property is changed or modified.
-   * @memberof Entity.prototype
-   *
-   * @type {Event}
-   * @readonly
-   */
   definitionChanged: {
     get: function () {
       return this._definitionChanged;
     },
   },
-
-  /**
-   * Gets or sets whether this entity should be displayed. When set to true,
-   * the entity is only displayed if the parent entity's show property is also true.
-   * @memberof Entity.prototype
-   * @type {Boolean}
-   */
   show: {
     get: function () {
       return this._show;
@@ -216,12 +181,6 @@ Object.defineProperties(Entity.prototype, {
       this.'_definitionChanged'.raiseEvent(this, "show", value, !value);
     },
   },
-
-  /**
-   * Gets or sets the parent object.
-   * @memberof Entity.prototype
-   * @type {Entity|undefined}
-   */
   parent: {
     get: function () {
       return this._parent;
@@ -255,12 +214,6 @@ Object.defineProperties(Entity.prototype, {
   },
 
   // properties needed are listed below
-  /**
-   * Gets whether this entity is being displayed, taking into account
-   * the visibility of any ancestor entities.
-   * @memberof Entity.prototype
-   * @type {Boolean}
-   */
   isShowing: {
     get: function () {
       return (

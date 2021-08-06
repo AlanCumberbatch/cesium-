@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+  <title>CesiumTest</title>
+  <!-- *A: 引入打包后的 Cesium 文件 -->
+  <script src="../Build/Cesium/Cesium.js"></script>
+  <style>
+    /*  *B: 引入 Cesium.widget 的 css 文件 */
+    @import url(../Build/Cesium/Widgets/widgets.css);
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+    //*D: new Cesium.Viewer，即可创建一个地球出来
+    // Initialize the Cesium Viewer in the HTML element with the "cesiumContainer" ID.
+    var viewer = new Cesium.Viewer('cesiumContainer');
+
+    // var citizensBankPark = viewer.entities.add({
+    //     name : 'Citizens Bank Park',
+    //     position : Cesium.Cartesian3.fromDegrees(-75.166493, 39.9060534),
+    //     point : {
+    //         pixelSize : 5,
+    //         color : Cesium.Color.RED,
+    //         outlineColor : Cesium.Color.WHITE,
+    //         outlineWidth : 2
+    //     },
+    //     label : {
+    //         text : 'Citizens Bank Park',
+    //         font : '14pt monospace',
+    //         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+    //         outlineWidth : 2,
+    //         verticalOrigin : Cesium.VerticalOrigin.BOTTOM,
+    //         pixelOffset : new Cesium.Cartesian2(0, -9)
+    //     }
+    // });
+
+    // Replace the point with a billboard, which is a marker that’s always facing the user.
+
+    var citizensBankPark = viewer.entities.add({
+      position : Cesium.Cartesian3.fromDegrees(-75.166493, 39.9060534),
+      billboard : {
+        image : './png.png',
+        width : 64,
+        height : 64
+      },
+      label : {
+        text : 'Citizens Bank Park',
+        font : '14pt monospace',
+        style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+        outlineWidth : 2,
+        verticalOrigin : Cesium.VerticalOrigin.TOP,
+        pixelOffset : new Cesium.Cartesian2(0, 32)
+      }
+    });
+
+    viewer.zoomTo(viewer.entities);
+
+  </script>
+</body>
+</html>
