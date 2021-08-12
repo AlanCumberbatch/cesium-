@@ -14,6 +14,7 @@
         我根本上是想将这条线串起来，期间，涉及到 Cesium 内部的很多类，还有一些参数，然后还有对应的类的内部会使用到的关键方法，
 
       关于这些细枝末节，无关紧要的事情先不管，把主线先牵出来
+
  -->
 
 # 应用案例： polyline
@@ -39,13 +40,13 @@ var redLine = [<font color=orange>viewer.entities</font>](#源码解读-从-view
 
 entities: {<br/>
 &emsp;get: function () {<br/>
-&emsp;&emsp;return `this._dataSourceDisplay`.[defaultDataSource](#font-colorgreendatasourcedisplayfont).[entities](#font-colorgreencustomdatasourcefont);<br/>
+&emsp;&emsp;return this._dataSourceDisplay.[defaultDataSource](#font-colorgreendatasourcedisplayfont).[entities](#font-colorgreencustomdatasourcefont);<br/>
 &emsp;},<br/>
 },<br/>
 <br/>
 <br/>
 
-`this._dataSourceDisplay` = ~~<font color=orange>dataSourceDisplay</font>~~;
+this._dataSourceDisplay = dataSourceDisplay;
 <br/>
 <br/>
 <br/>
@@ -55,7 +56,7 @@ if (!defined(dataSourceCollection)) {<br/>
 &emsp;dataSourceCollection = new DataSourceCollection();<br/>
 }<br/>
 
-var ~~<font color=orange>dataSourceDisplay</font>~~ = new [<font color=green>DataSourceDisplay</font>](#font-colorgreendatasourcedisplayfont)({<br/>
+var dataSourceDisplay = new [<font color=green>DataSourceDisplay</font>](#font-colorgreendatasourcedisplayfont)({<br/>
 &emsp;scene: scene,<br/>
 &emsp;dataSourceCollection: [dataSourceCollection](dataSourceCollection.md),<br/>
 });<br/>
@@ -140,7 +141,7 @@ EntityCollection.prototype.**<font color=skyblue>add</font>** = function (entity
 &emsp;}<br/>
 <br/>
 &emsp;var id = [entity.id](####Entity); //如果 id 没传，会自动生成一个 Guid<br/>
-&emsp;var entities = this._entities;&emsp;&emsp;// this._entities = new <font color=green>AssociativeArray</font>();<br/>
+&emsp;var entities = this._entities;&emsp;&emsp;// this._entities = new [AssociativeArray](#font-colorgreenassociativearrayfont);<br/>
 &emsp;if (entities.contains(id)) {<br/>
 &emsp;&emsp;throw new RuntimeError("An entity with id " + id + " already exists in this collection.");<br/>
 &emsp;}<br/>
@@ -285,8 +286,7 @@ Object.defineProperties(Entity.prototype, {
 
 <br/>
 
-# [**<font color=skyblue>##createPropertyTypeDescriptor</font>**](createPropertyTypeDescriptor.md)
-
+# [**<font color=skyblue>##createPropertyTypeDescriptor</font>(just click)**](createPropertyTypeDescriptor.md)
 
 # **<font color=skyblue>##merge</font>**
 
@@ -349,8 +349,6 @@ Entity.prototype.merge = function (source) {
   }
 };
 ```
-
-
 
 # **<font color=pink>##definitionChanged</font>**
 

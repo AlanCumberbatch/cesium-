@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>CesiumTest</title>
+  <!-- *A: 引入打包后的 Cesium 文件 -->
+  <script src="../Build/Cesium/Cesium.js"></script>
+  <style>
+    /*  *B: 引入 Cesium.widget 的 css 文件 */
+    @import url(../Build/Cesium/Widgets/widgets.css);
+
+    html,
+    body,
+    #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- *C： 创建容纳 Cesium 的盒子 -->
+  <div id="cesiumContainer"></div>
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+    //*D: new Cesium.Viewer,   即可创建一个地球出来 -to create a virtual Earth
+    // Keep your `Cesium.Ion.defaultAccessToken = 'your_token_here'` line from before here.
+    var viewer = new Cesium.Viewer('cesiumContainer');
+    var scene = viewer.scene;
+
+    // original code
+    //viewer.entities.add({
+    //    rectangle : {
+    //        coordinates : Cesium.Rectangle.fromDegrees(-100.0, 20.0, -90.0, 30.0),
+    //        material : new Cesium.StripeMaterialProperty({
+    //            evenColor: Cesium.Color.WHITE,
+    //            oddColor: Cesium.Color.BLUE,
+    //            repeat: 5
+    //        })
+    //    }
+    //});
+
+    // Combining Geometry
+    //  This draws both both instances with the same appearance.
+    var a = () => {
+      var instance = new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle: Cesium.Rectangle.fromDegrees(-100.0, 20.0, -90.0, 30.0),
+          vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT
+        })
+      });
+
+      var anotherInstance = new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle: Cesium.Rectangle.fromDegrees(-85.0, 20.0, -75.0, 30.0),
+          vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT
+        })
+      });
+
+
+      scene.primitives.add(new Cesium.Primitive({
+        geometryInstances: [instance, anotherInstance],
+        appearance: new Cesium.EllipsoidSurfaceAppearance({//因为在表面或者在距离地面固定高度的模型，所以用这个
+          material: Cesium.Material.fromType('Stripe')
+        })
+      }));
+    }
+    // a()
+
+    var b = () => {
+      var instance = new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle: Cesium.Rectangle.fromDegrees(-100.0, 20.0, -90.0, 30.0),
+          vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+        }),
+        attributes: {
+          color: new Cesium.ColorGeometryInstanceAttribute(0.0, 0.0, 1.0, 0.8)
+        }
+      });
+
+      var anotherInstance = new Cesium.GeometryInstance({
+        geometry: new Cesium.RectangleGeometry({
+          rectangle: Cesium.Rectangle.fromDegrees(-85.0, 20.0, -75.0, 30.0),
+          vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+        }),
+        attributes: {
+          color: new Cesium.ColorGeometryInstanceAttribute(1.0, 0.0, 0.0),
+        }
+      });
+
+      scene.primitives.add(new Cesium.Primitive({
+        geometryInstances: [instance, anotherInstance],
+        appearance: new Cesium.PerInstanceColorAppearance()//use PerInstanceColorAppearance to shade each instance with a different color.
+      }));
+    }
+    // b();
+
+    var c = () => {
+      var instances = [];
+      for (var lon = -180.0; lon < 180.0; lon += 5.0) {
+        for (var lat = -85.0; lat < 85.0; lat += 5.0) {
+          instances.push(new Cesium.GeometryInstance({
+            geometry: new Cesium.RectangleGeometry({
+              rectangle: Cesium.Rectangle.fromDegrees(lon, lat, lon + 5.0, lat + 5.0),
+              vertexFormat: Cesium.PerInstanceColorAppearance.VERTEX_FORMAT
+            }),
+            attributes: {
+              color: Cesium.ColorGeometryInstanceAttribute.fromColor(Cesium.Color.fromRandom({ alpha: 0.5 }))
+            }
+          }));
+        }
+      }
+
+      scene.primitives.add(new Cesium.Primitive({
+        geometryInstances: instances,
+        appearance: new Cesium.PerInstanceColorAppearance()
+      }));
+    }
+    // c();
+
+  </script>
+</body>
+
+</html>

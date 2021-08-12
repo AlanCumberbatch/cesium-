@@ -1,3 +1,5 @@
+# [<font color=red>back to entities.add</font>](index_entities_add.md#font-colorskybluecreatepropertytypedescriptorfontjust-click)
+
 ```js
 function createPropertyTypeDescriptor(name, Type) {
   return createPropertyDescriptor(name, undefined, function (value) {
@@ -63,7 +65,9 @@ function createProperty(
         (!defined(value) || !defined(value.getValue)) &&
         defined(createPropertyCallback)
       ) {
-        value = createPropertyCallback(value);
+        value = createPropertyCallback(value);// 默认是createConstantProperty， 但是涉及到 box，polyline 等模型的时候，会传进来 相应的 ***Graphics
+        //  link about Graphics in Cesium.document : https://cesium.com/learn/cesiumjs/ref-doc/PolylineGraphics.html?classFilter=Graphics
+        //  choose PolylineGraphics as example,link is listed below.
       }
 
       if (oldValue !== value) {
@@ -83,3 +87,5 @@ function createProperty(
   };
 }
 ```
+
+[PolylineGraphics](../about_sourceCode/PolylineGraphic.md)

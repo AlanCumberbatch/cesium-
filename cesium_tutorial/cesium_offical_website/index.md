@@ -12,3 +12,10 @@ Put the innerHTML of demo's body in Gitch <a href="https://glitch.com/edit/#!/da
 - [CesiumJS API](https://cesium.com/learn/cesiumjs/ref-doc/)
 - [Create entities](src/Create_entities.md)
 - [Visualizing Imagery](src/Visualizing_Imagery.md)
+- [Visualizing 3D Terrain](src/Visualizing_3D_Terrain.md)
+- [Camera](src/Camera.md)
+- [*Custom Geometry & Appearances](src/Custom_Geometry_and_Appearances.md)
+- Introduction to particle system(现在根本用不上。。。。。看是看了，但是没记笔记，主要是一个叫 粒子系统的类 )
+- Style & filter 3D Tiles (大致看了一下)
+- new words to learn.
+  - <font color=orange>Visualizing</font> /'vɪʒʊə,laɪz/ n. 肉眼观察

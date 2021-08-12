@@ -7,3 +7,5 @@ Almost all of the resource files and related links are not available in this tut
 
 在看过 Cesium 英文版官网后，发现还是直接看官网文档来的香。
 After read tutorial in offical website, I think it's great for people who wants to know Cesium.
+
+## [Cesium tips](useful_tips/index.md)
