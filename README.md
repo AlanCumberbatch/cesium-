@@ -5,6 +5,6 @@
 
 ## [Cesium 整体架构介绍 -Cesium's overall architecture introduction](cesium_summary/Cesium_architecture.md)
 
-## [Cesium 源码分析初步 -Cesium source code analysis preliminary(include some tips)](cesium_miniature/index.md)
+## [Cesium 源码分析初步 -Cesium source code analysis preliminary](cesium_miniature/index.md)
 <!-- ## [Cesium 源码分析初步](Cesiumm_sourceCode_analyse.md) -->
-## [文档阅读记录 -Document reading record](cesium_tutorial/READEME.md)
+## [文档阅读记录 -Document reading record(include some tips)](cesium_tutorial/READEME.md)
