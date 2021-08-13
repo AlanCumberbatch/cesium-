@@ -1,6 +1,8 @@
 Render must be called between picks.<br>
-There is a decrease in performance when enabled. There are extra draw calls to write depth for translucent geometry.<br>
+There is a decrease in performance when enabled(Scene.pickTranslucentDepth = false;). <br>
+There are extra draw calls to write depth for translucent geometry.<br>
 <br>
+
 @example<br>
 // picking the position of a translucent primitive<br>
 viewer.screenSpaceEventHandler.setInputAction(function onLeftClick(movement) {<br>

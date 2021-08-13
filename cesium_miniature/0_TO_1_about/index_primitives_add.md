@@ -365,9 +365,6 @@ function updateAndRenderPrimitives(scene) {
 }
 ```
 
-
-
-
 # [Scene](#sceneto-top).prototype.executeCommandsInViewport([to top](#应用案例-rectangle))
 
 函数 executeCommandsInViewport 在 Scene 内部的 execute2DViewportCommands, prototype.updateAndExecuteCommands 这两个方法中 执行，其中，execute2DViewportCommands 只在 prototype.updateAndExecuteCommands 中执行，
