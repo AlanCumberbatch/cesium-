@@ -27,8 +27,6 @@ viewer.entities.add({
 
 <!--（这个言论不咋对） Cesium.Viewer 在 Cesium.Widget 的基础上添加了很多操作事件，和对 Widget 内部一些事件的调用，最终还是将 primitives 添加到了 Widget 内部 的 Scene 中？ -->
 
-最终将模型添加到了 Viewer.entities 上了？ 是通过一个引用来访问？还是就是添加到这里了？
-
 每一个 Entity 放到 EntityCollection 里的时候，都会对应有一个 collectionChanged (instance of Event)里的对应的事件，
 当 执行 EntityCollection内部的 fireChangedEvent 方法时，会执行且仅在此处执行 collectionChanged.raiseEvent(...).
 具体代码： ```collection._collectionChanged.raiseEvent(collection, addedArray, removedArray, changedArray);```<br>
@@ -41,7 +39,7 @@ viewer.entities.add({
 &emsp;&emsp;&emsp;--- 存在this._trackedEntityChanged 并且会在 set 时执行<br>
 &emsp;&emsp;&emsp;--- set 时执行：<br>
 &emsp;&emsp;&emsp;&emsp;---- this._trackedEntityChanged.raiseEvent(value);<br>
-&emsp;&emsp;&emsp;&emsp;---- 最后这句：this.scene.requestRender(); 的作用就是: this._renderRequested = true; ==》 在Scene.prototype.render 中用于判断 shouldRender 的值( [about why the problem was converted to the update function](../0_TO_1_about/index_entities_add.md#应用案例-polyline) ) <br>
+&emsp;&emsp;&emsp;&emsp;---- 最后这句：this.scene.requestRender(); 的作用就是: this._renderRequested = true; ==》 在Scene.prototype.render 中用于判断 shouldRender 的值( [about why the problem was converted to the update function](../0_TO_1_about/index_entities_add.md#firechangedevent) ) <br>
 &emsp;&emsp;B- 修改 [this.selectedEntity](#viewertrackedentity)<br>
 &emsp;&emsp;&emsp;---  当前选中的 Primitive/Entity（拦截器属性，有set对应的代码块）<br>
 <br>
@@ -54,6 +52,24 @@ viewer.entities.add({
       "_clockTrackedDataSource",
     ]);
   ```
+
+
+视图更新关键函数：
+  - [fireChangedEvent](#firechangedevent)
+
+最终的关键属性:
+
+  - [this.trackedEntity( mainly )](#viewerprototypetrackedentity)
+  - [this.selectedEntity](#viewerprototypeselectedentity)
+
+相关细节：[for detail](../0_TO_1_about/index_entities_add.md), <font color=red>但是就目前发现的内容，和 Primitive API 没有一毛钱关系啊！！！(还是需要看 Primitive API相关内容，0816)</font>
+
+<br/>
+
+![How Entity works](../../images/Enrity_how.jpg)
+
+<br/>
+<br/>
 
 # Related code
 

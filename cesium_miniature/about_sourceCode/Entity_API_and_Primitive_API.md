@@ -16,6 +16,8 @@
 
 [ How Entity API works](How_Entity_API_works.md)
 
+[ How Primitive API works](How_Primitive_API_works.md)
+
 <br/>
 <br/>
 <br/>

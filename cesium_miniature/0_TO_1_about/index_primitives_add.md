@@ -2,7 +2,19 @@
   why i want to write this?
   cause i want to know clearly how Primitive API works,and then comparing with Entity API, and finally trying to do something .
  -->
+# 结论/conclusion
 
+
+将 primitive 添加到 Scene 后 会自动更新视图。
+
+需要注意的是：
+
+- Appearance 和 GeometryInstance 的匹配
+  - [Appearance](https://cesium.com/learn/cesiumjs/ref-doc/Appearance.html?classFilter=Appearance)：
+    - PerInstanceColorAppearance: An appearance for GeometryInstance instances with color attributes. This allows several geometry instances, each with a different color, to be drawn with the same Primitive as shown in the second example below.
+    - MaterialAppearance：An appearance for arbitrary geometry (as opposed to EllipsoidSurfaceAppearance, for example) that supports shading with materials.
+    - EllipsoidSurfacceAppearance：An appearance for geometry on the surface of the ellipsoid like PolygonGeometry and RectangleGeometry, which supports all materials like MaterialAppearance with MaterialAppearance.MaterialSupport.ALL. However, this appearance requires fewer vertex attributes since the fragment shader can procedurally compute normal, tangent, and bitangent.
+    - Another three: DebugAppearance, PolylineColorAppearance, PolylineMaterialAppearance
 # 应用案例： Rectangle
 
 var viewer = new Cesium.Viewer('cesiumContainer');<br/>

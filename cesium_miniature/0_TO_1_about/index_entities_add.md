@@ -17,11 +17,22 @@
 
  -->
 
+# 结论/conclusion
+
+视图更新关键函数：
+  - [fireChangedEvent](#firechangedevent)
+
+最终的关键属性:
+
+  - [this.trackedEntity( mainly )](#viewerprototypetrackedentity)
+  - [this.selectedEntity](#viewerprototypeselectedentity)
+
+但是就目前发现的内容，和 Primitive API 没有一毛钱关系啊！！！
 # 应用案例： polyline
 
 var viewer = new Cesium.Viewer("cesiumContainer");
 
-var redLine = [viewer](#viewer).[entities](#viewer).[add](#entitycollection)({<br/>
+var redLine = [viewer](#viewer).[entities](#viewer).[add](#entitycollectionprototypeadd)({<br/>
 &emsp;name: "Red line on terrain",<br/>
 &emsp;[polyline](#font-colorred在-entityprototype-上定义和时间相关的响应式属性-------动态根据输入的-polyline-属性-成功生成-polyline-模型的关键font): {<br/>
 &emsp;&emsp;positions: Cesium.Cartesian3.fromDegreesArray([-75, 35, -125, 35]),<br/>
@@ -55,6 +66,15 @@ var redLine = [viewer](#viewer).[entities](#viewer).[add](#entitycollection)({<b
  */
 function Viewer(container, options) {
 
+  var context = new Context(canvas, contextOptions);
+  this._jobScheduler = new JobScheduler();
+  // function FrameState(context, creditDisplay, jobScheduler)
+  this._frameState = new FrameState(
+    context,
+    new CreditDisplay(creditContainer, " • ", creditViewport),
+    this._jobScheduler
+  );
+
   // dataSourceCollection
   var dataSourceCollection = options.dataSources;
   var destroyDataSourceCollection = false;
@@ -85,6 +105,7 @@ function Viewer(container, options) {
   }
   this._dataSourceAdded(undefined, dataSourceDisplay.defaultDataSource);
 
+  // EventHelper.prototype.add = function (event, listener, scope)
   // Hook up events so that we can subscribe to future sources.
   eventHelper.add(
     dataSourceCollection.dataSourceAdded,
@@ -97,7 +118,9 @@ function Viewer(container, options) {
     this
   );
 
-  eventHelper.add(scene.postRender, Viewer.prototype._postRender, this);//EventHelper.prototype.add = function (event, listener, scope)
+  //EventHelper.prototype.add = function (event, listener, scope)
+  eventHelper.add(scene.postUpdate, Viewer.prototype.resize, this);//???
+  eventHelper.add(scene.postRender, Viewer.prototype._postRender, this);
 
 }
 
@@ -121,21 +144,26 @@ Object.defineProperties(Viewer.prototype, {
   - [DataSourceDisplay](#datasourcedisplay)
   - [EventHelper](#eventhelper)
   - [EventHelper.add](#eventhelperprototypeadd)
+  - [Viewer.prototype.dataSourceAdded](#viewerprototypedatasourceadded)
+  - [Viewer.prototype.dataSourceRemoved](#viewerprototypedatasourceremoved)
 
 ## Viewer.prototype.dataSourceAdded
 
-[to Viewer](#viewer)<br/>
 方法实际是 Viewer.prototype._dataSourceAdded 但是在锚点处写的话，不能正常跳转
+
+只在 Viewer 初始化的时候使用了。
+
+[to Viewer](#viewer)<br/>
+
 ```js
 /**
  * @private
  */
-Viewer.prototype._dataSourceAdded = function (
-  dataSourceCollection,
-  dataSource
-) {
+Viewer.prototype._dataSourceAdded = function ( dataSourceCollection, dataSource ) {
   var entityCollection = dataSource.entities;
-  entityCollection.collectionChanged.addEventListener(
+  // Event.prototype.addEventListener = function (listener, scope)
+  // 添加监听事件是添加到  entityCollection.collectionChanged 上，想要调取/执行的话，需要 entityCollection.collectionChanged.raiseEvent(...)
+  entityCollection.collectionChanged.addEventListener(// entityCollection.collectionChanged 是 Event 的实例
     Viewer.prototype._onEntityCollectionChanged,
     this
   );
@@ -143,8 +171,12 @@ Viewer.prototype._dataSourceAdded = function (
 ```
 ## Viewer.prototype.dataSourceRemoved
 
-[to Viewer](#viewer)<br/>
 方法实际是 Viewer.prototype._dataSourceRemoved 但是在锚点处写的话，不能正常跳转
+
+只在 Viewer.prototype.destroy 和 Viewer 初始化的时候 使用了
+
+[to Viewer](#viewer)<br/>
+
 ```js
 /**
  * @private
@@ -246,7 +278,8 @@ this.trackedEntity, this.selectedEntity 这两个属性 通过 knockout 进行�
             scene.screenSpaceCameraController.enableTilt = true;
           }
 
-          // 只有在函数 updateTrackedEntity 中会被赋值，viewer._entityView = new EntityView(...)，---》 updateTrackedEntity 只在 Viewer.prototype._postRender 中被调用
+          // 只有在函数 updateTrackedEntity 中会被赋值，viewer._entityView = new EntityView(...)，
+          //     ---》 updateTrackedEntity 只在 Viewer.prototype._postRender 中被调用
           //紧接着跟了一句 viewer._entityView.update ---》 * Should be called each animation frame to update the camera
           this._entityView = undefined;
 
@@ -260,7 +293,12 @@ this.trackedEntity, this.selectedEntity 这两个属性 通过 knockout 进行�
         }
 
         this._trackedEntityChanged.raiseEvent(value);//?????
-        this.scene.requestRender();// change this._renderRequested to true , aiming to set the value of shouldRender in function Scene.prototype.render to true, in another words, in order to requests a new rendered frame
+
+        // change this._renderRequested to true ,
+        // aiming to set the value of shouldRender in function Scene.prototype.render to true,
+        // in another words, in order to requests a new rendered frame
+        this.scene.requestRender();
+        //! how to execute Scene.prototype.render after this ? 08.16
       }
     },
   },
@@ -356,7 +394,7 @@ function updateTrackedEntity(viewer) {
 
 ```
 
-[EntityView]()
+<!-- [EntityView]() -->
 
 ## Viewer.prototype._postRender
 
@@ -542,7 +580,7 @@ EntityCollection.prototype.add = function (entity) {
   );
 
   // 在该函数内部执行更新视图操作
-  fireChangedEvent(this);// link is listed above
+  fireChangedEvent(this);// link is listed below
   return entity;
 };
 ```
@@ -564,7 +602,7 @@ EntityCollection.prototype._onEntityDefinitionChanged = function (entity) {
 };
 ```
 
-## fireChangedEvent
+# fireChangedEvent
 
 ```js
 function fireChangedEvent(collection) {
@@ -603,6 +641,8 @@ function fireChangedEvent(collection) {
 相关函数文档内部跳转查看链接：
 - [Viewer.prototype._dataSourceAdded](#viewerprototypedatasourceadded)
 - [Viewer.prototype._dataSourceRemoved](#viewerprototypedatasourceremoved)
+- [EntityCollection.prototype.add](#entitycollectionprototypeadd)
+- [Viewer.prototype._onEntityCollectionChanged](#viewerprototypeonentitycollectionchanged)
 
 <br/><br/>
 
@@ -813,6 +853,36 @@ AssociativeArray.prototype.set = function (key, value) {
 
 ```js
 /**
+ * A generic utility class for managing subscribers for a particular event.
+ * This class is usually instantiated inside of a container class and
+ * exposed as a property for others to subscribe to.
+ *
+ * @alias Event
+ * @constructor
+ * @example
+ * MyObject.prototype.myListener = function(arg1, arg2) {
+ *     this.myArg1Copy = arg1;
+ *     this.myArg2Copy = arg2;
+ * }
+ *
+ * var myObjectInstance = new MyObject();
+ * var evt = new Cesium.Event();
+ * evt.addEventListener(MyObject.prototype.myListener, myObjectInstance);
+ * evt.raiseEvent('1', '2');
+ * evt.removeEventListener(MyObject.prototype.myListener);
+ */
+function Event() {
+  this._listeners = [];
+  this._scopes = [];
+  this._toRemove = [];
+  this._insideRaiseEvent = false;
+}
+```
+
+### Event.prototype.addEventListener
+
+```js
+/**
  * Registers a callback function to be executed whenever the event is raised.
  * An optional scope can be provided to serve as the <code>this</code> pointer
  * in which the function will execute.
@@ -837,6 +907,98 @@ Event.prototype.addEventListener = function (listener, scope) {
   return function () {
     event.removeEventListener(listener, scope);
   };
+};
+```
+
+### Event.prototype.raiseEvent
+
+```js
+/**
+ * Raises the event by calling each registered listener with all supplied arguments.
+ *
+ * @param {...Object} arguments This method takes any number of parameters and passes them through to the listener functions.
+ *
+ * @see Event#addEventListener
+ * @see Event#removeEventListener
+ */
+Event.prototype.raiseEvent = function () {
+  this._insideRaiseEvent = true;
+
+  var i;
+  var listeners = this._listeners;
+  var scopes = this._scopes;
+  var length = listeners.length;
+
+  //TODO 我感觉咋都调用了呢？？就塞到里面的函数都执行了，按说就只执行一个啊应该
+  for (i = 0; i < length; i++) {
+    var listener = listeners[i];
+    if (defined(listener)) {
+      listeners[i].apply(scopes[i], arguments);
+    }
+  }
+
+  //Actually remove items removed in removeEventListener.
+  var toRemove = this._toRemove;
+  length = toRemove.length;
+  if (length > 0) {
+    toRemove.sort(compareNumber);
+    for (i = 0; i < length; i++) {
+      var index = toRemove[i];
+      listeners.splice(index, 1);
+      scopes.splice(index, 1);
+    }
+    toRemove.length = 0;
+  }
+
+  this._insideRaiseEvent = false;
+};
+```
+### Event.prototype.removeEventListener
+
+```js
+/**
+ * Unregisters a previously registered callback.
+ *
+ * @param {Function} listener The function to be unregistered.
+ * @param {Object} [scope] The scope that was originally passed to addEventListener.
+ * @returns {Boolean} <code>true</code> if the listener was removed; <code>false</code> if the listener and scope are not registered with the event.
+ *
+ * @see Event#addEventListener
+ * @see Event#raiseEvent
+ */
+
+Event.prototype.removeEventListener = function (listener, scope) {
+  //>>includeStart('debug', pragmas.debug);
+  Check.typeOf.func("listener", listener);
+  //>>includeEnd('debug');
+
+  var listeners = this._listeners;
+  var scopes = this._scopes;
+
+  var index = -1;
+  for (var i = 0; i < listeners.length; i++) {
+    if (listeners[i] === listener && scopes[i] === scope) {
+      index = i;
+      break;
+    }
+  }
+
+  if (index !== -1) {
+    if (this._insideRaiseEvent) {
+      //In order to allow removing an event subscription from within
+      //a callback, we don't actually remove the items here.  Instead
+      //remember the index they are at and undefined their value.
+      this._toRemove.push(index);
+      listeners[index] = undefined;
+      scopes[index] = undefined;
+    } else {
+      listeners.splice(index, 1);
+      scopes.splice(index, 1);
+    }
+    return true;
+  }
+
+  return false;
 };
 ```
 
@@ -951,6 +1113,9 @@ function EntityView(entity, scene, ellipsoid) {
 
 ###  EntityView.prototype.update
 
+
+<!-- !!!!! 下次接着这里看 -->
+
 ```js
 /**
  * Should be called each animation frame to update the camera
@@ -1029,4 +1194,48 @@ EntityView.prototype.update = function (time, boundingSphere) {
     ellipsoid
   );
 };
+```
+
+# DataSourceCollection
+
+```js
+/**
+ * A collection of {@link DataSource} instances.
+ * @alias DataSourceCollection
+ * @constructor
+ */
+function DataSourceCollection() {
+  this._dataSources = [];
+  this._dataSourceAdded = new Event();
+  this._dataSourceRemoved = new Event();
+  this._dataSourceMoved = new Event();
+}
+
+Object.defineProperties(DataSourceCollection.prototype, {
+  /**
+   * An event that is raised when a data source is added to the collection.
+   * Event handlers are passed the data source that was added.
+   * @memberof DataSourceCollection.prototype
+   * @type {Event}
+   * @readonly
+   */
+  dataSourceAdded: {
+    get: function () {
+      return this._dataSourceAdded;
+    },
+  },
+
+  /**
+   * An event that is raised when a data source is removed from the collection.
+   * Event handlers are passed the data source that was removed.
+   * @memberof DataSourceCollection.prototype
+   * @type {Event}
+   * @readonly
+   */
+  dataSourceRemoved: {
+    get: function () {
+      return this._dataSourceRemoved;
+    },
+  },
+})
 ```
