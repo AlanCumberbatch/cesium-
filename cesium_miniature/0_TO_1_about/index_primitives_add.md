@@ -1,6 +1,6 @@
 <!--
   why i want to write this?
-  cause i want to know clearly how Primitive API works,and then comparing with Entity API, and finally trying to do something .
+  cause i want to know clearly how Primitive API works,and then comparing with Primitive API, and finally trying to do something .
  -->
 # 结论/conclusion
 
@@ -10,7 +10,7 @@
 需要注意的是：
 
 - Appearance 和 GeometryInstance 的匹配
-  - [Appearance](https://cesium.com/learn/cesiumjs/ref-doc/Appearance.html?classFilter=Appearance)：
+  - [Appearance（a webpage link of Cesium.document）](https://cesium.com/learn/cesiumjs/ref-doc/Appearance.html?classFilter=Appearance)：
     - PerInstanceColorAppearance: An appearance for GeometryInstance instances with color attributes. This allows several geometry instances, each with a different color, to be drawn with the same Primitive as shown in the second example below.
     - MaterialAppearance：An appearance for arbitrary geometry (as opposed to EllipsoidSurfaceAppearance, for example) that supports shading with materials.
     - EllipsoidSurfacceAppearance：An appearance for geometry on the surface of the ellipsoid like PolygonGeometry and RectangleGeometry, which supports all materials like MaterialAppearance with MaterialAppearance.MaterialSupport.ALL. However, this appearance requires fewer vertex attributes since the fragment shader can procedurally compute normal, tangent, and bitangent.
@@ -34,7 +34,7 @@ var anotherInstance = new Cesium.GeometryInstance({<br/>
 &emsp;})<br/>
 });<br/>
 <br/>
-[scene](#sceneto-top).[primitives](#primitiveto-top).[add](#primitivecollectionaddto-top)(new Cesium.[Primitive](#primitiveto-top)({<br/>
+[scene](#scene).[primitives](#sceneprimitives).[add](#primitivecollectionadd)new Cesium.[Primitive](#primitive)({<br/>
 &emsp;geometryInstances: [instance, anotherInstance],<br/>
 &emsp;appearance: new Cesium.EllipsoidSurfaceAppearance({//因为在表面或者在距离地面固定高度的模型，所以用这个<br/>
 &emsp;&emsp;material: Cesium.Material.fromType('Stripe')<br/>
@@ -42,7 +42,7 @@ var anotherInstance = new Cesium.GeometryInstance({<br/>
 }));<br/>
 <br/>
 
-# Scene([to top](#应用案例-rectangle))
+# Scene
 
 ```js
 function Scene(options) {
@@ -67,8 +67,9 @@ function Scene(options) {
 
 }
 ```
+[PrimitiveCollection](#primitivecollection)
 
-## scene.primitives([to top](#应用案例-rectangle))
+## scene.primitives
 
 ```js
 Object.defineProperties(Scene.prototype, {
@@ -89,7 +90,7 @@ Object.defineProperties(Scene.prototype, {
 
 
 
-# PrimitiveCollection([to top](#应用案例-rectangle))
+# PrimitiveCollection
 
 ```js
 /**
@@ -137,7 +138,7 @@ function PrimitiveCollection(options) {
 }
 ```
 
-## [PrimitiveCollection](#primitivecollectionto-top).add([to top](#应用案例-rectangle))
+## PrimitiveCollection.add
 
 ```js
 /**
@@ -167,7 +168,7 @@ PrimitiveCollection.prototype.add = function (primitive, index) {
 };
 ```
 
-## PrimitiveCollection.prototype.update([to 成功添加之后如何成功渲染](#font-colorred成功添加之后如何成功渲染fontto-top))
+## PrimitiveCollection.prototype.update
 ```js
 /**
  * @private
@@ -187,7 +188,7 @@ PrimitiveCollection.prototype.update = function (frameState) {
 };
 ```
 
-# Primitive([to top](#应用案例-rectangle))
+# Primitive
 
 ```js
 function Primitive(options) {
@@ -205,7 +206,7 @@ function Primitive(options) {
 }
 ```
 
-## Primitive.prototype.update([to PrimitiveCollection.prototype.update](#primitiveprototypeupdateto-primitivecollectionprototypeupdateto-成功添加之后如何成功渲染))([to 成功添加之后如何成功渲染](#font-colorred成功添加之后如何成功渲染fontto-top))
+## Primitive.prototype.update
 
 ```js
 /**
@@ -355,7 +356,7 @@ Primitive.prototype.update = function (frameState) {
 ```
 
 
-# <font color=red>成功添加之后，如何成功渲染?</font>([to top](#应用案例-rectangle))
+# <font color=red>成功添加之后，如何成功渲染?</font>
 
 在函数 Scene.updateAndRenderPrimitives 内部，此函数会 在且仅在 Scene内部的两个函数内部执行： executeWebVRCommands(VR相关的内容暂时不研究08.11)， [executeCommandsInViewport(主要看这个)](#sceneprototypeexecutecommandsinviewport),<br/>
 从而执行 [scene._primitives.update](#primitivecollectionprototypeupdateto-成功添加之后如何成功渲染) 方法。
@@ -377,7 +378,7 @@ function updateAndRenderPrimitives(scene) {
 }
 ```
 
-# [Scene](#sceneto-top).prototype.executeCommandsInViewport([to top](#应用案例-rectangle))
+# Scene.prototype.executeCommandsInViewport
 
 函数 executeCommandsInViewport 在 Scene 内部的 execute2DViewportCommands, prototype.updateAndExecuteCommands 这两个方法中 执行，其中，execute2DViewportCommands 只在 prototype.updateAndExecuteCommands 中执行，
 所以，以 [prototype.updateAndExecuteCommands](#sceneprototypeupdateandexecutecommands) 为主
