@@ -1,4 +1,4 @@
-# <font color=red>The reason why i write this: i want to know how it works with Primitive API</font>
+# <font color=red>The reason why i write this: i want to know how it works with Entity API</font>
 
 # Beginning
 
