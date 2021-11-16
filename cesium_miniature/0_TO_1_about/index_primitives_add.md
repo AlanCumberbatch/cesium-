@@ -4,7 +4,7 @@
  -->
 # 结论/conclusion
 
-
+参照 Cesium 1.85 <br/>
 将 primitive 添加到 Scene 后 会自动更新视图。
 
 需要注意的是：
@@ -380,9 +380,7 @@ function updateAndRenderPrimitives(scene) {
 
 # Scene.prototype.executeCommandsInViewport
 
-函数 executeCommandsInViewport 在 Scene 内部的 execute2DViewportCommands, prototype.updateAndExecuteCommands 这两个方法中 执行，其中，execute2DViewportCommands 只在 prototype.updateAndExecuteCommands 中执行，
-所以，以 [prototype.updateAndExecuteCommands](#sceneprototypeupdateandexecutecommands) 为主
-
+函数 executeCommandsInViewport 在 Scene 内部的 execute2DViewportCommands, Scene.prototype.updateAndExecuteCommands 这两个方法中 执行，且 execute2DViewportCommands 方法只在 Scene.prototype.updateAndExecuteCommands 中根据判断条件进行执行。
 
 ```js
 function executeCommandsInViewport( firstViewport, scene, passState, backgroundColor) {
@@ -416,7 +414,7 @@ function executeCommandsInViewport( firstViewport, scene, passState, backgroundC
 
 # Scene.prototype.updateAndExecuteCommands
 
-函数 updateAndExecuteCommands 在且只在 [render函数](#scenerender) 中执行
+函数 updateAndExecuteCommands 在且只在 [render函数](#sceneprototyperender) 中执行
 
 ```js
 /**
@@ -434,7 +432,7 @@ Scene.prototype.updateAndExecuteCommands = function ( passState, backgroundColor
     mode !== SceneMode.SCENE2D ||
     this._mapMode2D === MapMode2D.ROTATE
   ) {
-    executeCommandsInViewport(true, this, passState, backgroundColor);
+    executeCommandsInViewport(true, this, passState, backgroundColor);//在这里！
   } else {
     updateAndClearFramebuffers(this, passState, backgroundColor);
     execute2DViewportCommands(this, passState);
@@ -443,9 +441,9 @@ Scene.prototype.updateAndExecuteCommands = function ( passState, backgroundColor
 
 ```
 
-# Scene.render
+# render in Scene.js
 
-在 Scene.prototype.render 内部生效
+只在 [Scene.prototype.render](#sceneprototyperender) 中执行。
 
 ```js
 function render(scene) {
@@ -522,4 +520,73 @@ function render(scene) {
 
   context.endFrame();
 }
+```
+
+# Scene.prototype.render
+
+```js
+//为了方便阅读
+function tryAndCatchError(scene, functionToExecute) {
+  try {
+    functionToExecute(scene);
+  } catch (error) {
+    scene._renderError.raiseEvent(scene, error);
+
+    if (scene.rethrowRenderErrors) {
+      throw error;
+    }
+  }
+}
+
+/**
+ * Update and render the scene. It is usually not necessary to call this function
+ * directly because {@link CesiumWidget} or {@link Viewer} do it automatically.
+ * @param {JulianDate} [time] The simulation time at which to render.
+ */
+Scene.prototype.render = function (time) {
+  /**
+   *
+   * Pre passes update. Execute any pass invariant code that should run before the passes here.
+   *
+   */
+  this._preUpdate.raiseEvent(this, time);
+
+  var frameState = this._frameState;
+  frameState.newFrame = false;
+
+  if (!defined(time)) {
+    time = JulianDate.now();
+  }
+
+  // Determine if shouldRender
+  var cameraChanged = this._view.checkForCameraUpdates(this);
+  var shouldRender =
+    !this.requestRenderMode ||
+    this._renderRequested ||
+    cameraChanged ||
+    this._logDepthBufferDirty ||
+    this._hdrDirty ||
+    this.mode === SceneMode.MORPHING;
+  if (
+    !shouldRender &&
+    defined(this.maximumRenderTimeChange) &&
+    defined(this._lastRenderTime)
+  ) {
+    var difference = Math.abs(
+      JulianDate.secondsDifference(this._lastRenderTime, time)
+    );
+    shouldRender = shouldRender || difference > this.maximumRenderTimeChange;
+  }
+
+  ...
+
+  if (shouldRender) {
+    this._preRender.raiseEvent(this, time);
+    frameState.creditDisplay.beginFrame();
+    tryAndCatchError(this, render);// 在这里执行 render 函数
+  }
+
+  ...
+
+};
 ```
