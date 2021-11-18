@@ -7,7 +7,7 @@
 |  生效流程  |  ![Entity_process](./Entity_process.svg)  | ![PrimitiveAPI_process](./Primitive_process.svg)  |
 |  时间插值  | Entity 拥有 Property 进行时间插值  | Primitive 没有时间插值，需要深入着色器 |
 |  性能  |  Entity 在数据量特别大的情况下性能比 Primitive 差  | ----  |
-|  案例代码  |  [Point](./Primitive_vs_Entity_demo/Point.md)，[Rectangle](./Primitive_vs_Entity_demo/Rectange.md) 【附上了流程图对应的pos格式文件，可以通过Process web端和移动端打开[文件位置](./ProcesssOn)】|
+|  案例代码  |  [Point](./Primitive_vs_Entity_demo/Point.md)，[Rectangle](./Primitive_vs_Entity_demo/Rectange.md) 【附上了流程图对应的pos格式文件，可以通过Process web端和移动端打开[文件位置](ProcessOn文件/README.md)】|
 
 
 
