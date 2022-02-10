@@ -9,4 +9,5 @@ Almost all of the resource files and related links are not available in this tut
 After read tutorial in offical website, I think it's great for people who wants to know Cesium.
 
 ## [Entity API & Primitive API in Cesium](../cesium_miniature/about_sourceCode/Entity_API_and_Primitive_API.md)
+## [Cesium 坐标转换](./cesium_XYZ.md)
 ## [Cesium tips](useful_tips/index.md)

@@ -9,3 +9,7 @@
 <!-- ## [Cesium 源码分析初步](Cesiumm_sourceCode_analyse.md) -->
 
 ## [文档阅读记录 -Document reading record(include some tips)](cesium_tutorial/READEME.md)
+
+## [Cesium 练习 / exercise ](cesium_exercise/README.md)
+
+## [Cesium 中使用的坐标系](cesium_XYZ.md)
