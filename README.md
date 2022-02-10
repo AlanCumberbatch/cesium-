@@ -10,4 +10,4 @@
 
 ## [文档阅读记录 -Document reading record(include some tips)](cesium_tutorial/READEME.md)
 
-## [Cesium 练习 / exercise ](cesium_exercise/README.md)
+<!-- ## [Cesium 练习 / exercise ](cesium_exercise/README.md) -->
