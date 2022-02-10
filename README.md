@@ -11,3 +11,4 @@
 ## [文档阅读记录 -Document reading record(include some tips)](cesium_tutorial/READEME.md)
 
 <!-- ## [Cesium 练习 / exercise ](cesium_exercise/README.md) -->
+## [用得到的计算机图形学的知识](./CG/CG_baisc.md)
