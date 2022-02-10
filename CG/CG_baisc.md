@@ -23,3 +23,4 @@
 
 ### 相关源代码
 ![HeadingPitchRoll_fromDegrees](./../images/HeadingPitchRoll_FromDegress.png)<br/>
+关于为什么都转换成弧度：Cesium目前支持两种坐标系WGS84和WebMercator，但是在Cesium中没有实际的对象来描述WGS84坐标，都是以弧度的方式来进行运用的也就是Cartographic类。[link](https://www.cnblogs.com/matanzhang/p/11846929.html)
