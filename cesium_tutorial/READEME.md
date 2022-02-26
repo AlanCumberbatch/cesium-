@@ -11,4 +11,5 @@ After read tutorial in offical website, I think it's great for people who wants 
 ## [Entity API & Primitive API in Cesium](../cesium_miniature/about_sourceCode/Entity_API_and_Primitive_API.md)
 ## [Cesium 坐标转换](./cesium_XYZ.md)
 ## [Cesium 中的内部图元哪些是继承自Primitive哪些是**Collection](./whether_from_Primitive.md)
+## [Cesium 中空间面积测量](./measureAreaSpace.md)
 ## [Cesium tips](useful_tips/index.md)
