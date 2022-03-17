@@ -1,0 +1,3 @@
+- [CG_baisc](CG_baisc.md)
+- [texel纹素](texel.md) :  内部有很多又伸出来的概念还没有看（对于图形学来说时基础概念，很有必要看）
+- [插值计算](./routeDiff/routeDifference.md)

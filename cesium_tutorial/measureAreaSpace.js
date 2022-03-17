@@ -147,6 +147,8 @@ var measureAreaSpace = function (viewer, handler) {
         var lon1 = from.lon * radiansPerDegree;
         var lat2 = to.lat * radiansPerDegree;
         var lon2 = to.lon * radiansPerDegree;
+        // Math.atan2() 返回从原点(0,0)到(x,y)点的线段与x轴正方向之间的平面角度(弧度值)，也就是Math.atan2(y,x)
+        // 这里用的什么知识 ？？？？
         var angle = -Math.atan2(
             Math.sin(lon1 - lon2) * Math.cos(lat2),
             Math.cos(lat1) * Math.sin(lat2) -
