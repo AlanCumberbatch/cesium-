@@ -16,6 +16,18 @@
   Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
   //*D: new Cesium.Viewer,   即可创建一个地球出来 -to create a virtual Earth
   const viewer = new Cesium.Viewer('cesiumContainer');
+  const url = './Cesium_Air (1).gltf';
+  const entity = viewer.entities.add({
+    name: url,
+    position: position,
+    // orientation: orientation,
+    model: {
+      uri: url,
+      minimumPixelSize: 128,
+      maximumScale: 20000,
+    },
+  });
+  viewer.trackedEntity = entity;
  </script>
 </body>
 
