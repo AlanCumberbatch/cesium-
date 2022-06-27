@@ -9,12 +9,12 @@
     <br/>
     小结：
     - 轨迹数据视化原理则是将时刻与坐标点相对应，按照时间顺序通过某种插值方法将轨迹点连成条光滑的轨迹曲线。为了更加通真显示轨迹动态效果，通常每条轨迹会有一个实物模型，如车辆、飞机或人物用于真实刻画不同情景下的轨迹特点。
-    - 粗略的理解为给定几个点之后，每秒在相邻两点之间插入一些点，在Cesium中单次插入插入3个点(Cartesian3.packedLength == 3)/1个pack(来自[cesium-CZML描述动态场景](https://blog.csdn.net/qq_36213352/article/details/122566687)),频繁根据相应的算法进行点的插入后，这些点就会都在能够表达相应算法的曲线上。据我目前的理解，曲线只可类比两点之间，不可延伸至整个Path/Polyline图元。<br/>
+    - 粗略的理解为给定几个点之后，每秒在相邻两点之间插入一些点，在Cesium中单次插入3个点(Cartesian3.packedLength == 3)/1个pack(来自[cesium-CZML描述动态场景](https://blog.csdn.net/qq_36213352/article/details/122566687)),频繁根据相应的算法进行点的插入后，这些点就会都在能够表达相应算法的曲线上。据我目前的理解，曲线只可类比两点之间，不可延伸至整个Path/Polyline图元。<br/>
     <br/>
     [cesium-CZML描述动态场景](https://blog.csdn.net/qq_36213352/article/details/122566687)中的表格中的参数Cesium中都有用到，但是主要是下面这两个：
     | 名称         | JSON类型     | 说明        |
     | ----------- | ----------- | ----------- |
-    | InterpolationAlgorithm |    string    | 用于插值的算法，有LAGTANGE，HERMITE和GEODESIC方法等，默认是LAGRANGE。如果位置不在该采样区间，那么这个属性值会被忽略 |
+    | InterpolationAlgorithm |    string    | 用于插值的算法，有LAGTANGE，HERMITE和GEODESIC方法等，默认是LAGRANGE(当前算法默认是线性插值)。如果位置不在该采样区间，那么这个属性值会被忽略 |
     | interpolationDegree    |    number    | 定义了用来插值所所使用的多项式次数，1表示线性差值，2表示二次插值法，默认为1。如果使用GEODESIC插值算法，那么这个属性将被忽略。 拉格朗日5次多项式插值方法,形成光滑连续的变化过程 |
 
     总体思路：将**时刻**与**坐标点**相对应，按照时间顺序通过某种插值方法将轨迹点连成条光滑的轨迹曲线。（轨迹数据视化原理）
@@ -28,9 +28,8 @@
         ```js
           // A-  区别于其他普通模型，主要区别在于 postion， 变得和时间有关系,这个 position 需要给到一个具体的模型作为载体以表现出实际效果
           function computeCirclularFlight(lon, lat, radius) {
-            // 当前函数定义了8个点， 然后利用 样条插值 进行插值计算。
             var property = new Cesium.SampledPositionProperty();
-            for (var i = 0; i <= 360; i += 45) {
+            for (var i = 0; i <= 360; i += 45) {// 当前函数定义了8个点， 然后据此利用 样条插值 进行插值计算。
               var radians = Cesium.Math.toRadians(i);
               // Cesium.JulianDate.addSeconds --- Adds the provided number of seconds to the provided date instance.
               // 就是把 i 的值当成秒添加到 start 这个时间的值上
