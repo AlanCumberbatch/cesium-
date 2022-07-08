@@ -2,36 +2,87 @@
 <html lang="en">
 
 <head>
- <meta charset="UTF-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <script src="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Cesium.js"></script>
- <link href="https://cesium.com/downloads/cesiumjs/releases/1.82/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
- <title>Import Obj to Cesium</title>
+    <!-- Use correct character set. -->
+    <meta charset="utf-8">
+    <!-- Tell IE to use the latest, best version. -->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <!-- Make the app on mobile take up the full browser screen and disable user scaling. -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>DEMO</title>
+    <!-- The Cesium library. -->
+    <script src="https://cesium.com/downloads/cesiumjs/releases/1.72/Build/Cesium/Cesium.js"></script>
+    <link href="https://cesium.com/downloads/cesiumjs/releases/1.72/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    <!-- <script src="./Cesium/Cesium.js"></script>
+  <link href="./Cesium/Widgets/widgets.css" rel="stylesheet"> -->
+
 </head>
 
 <body>
- <div id="cesiumContainer"></div>
- <script type="">
-  Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
-  //*D: new Cesium.Viewer,   即可创建一个地球出来 -to create a virtual Earth
-  const viewer = new Cesium.Viewer('cesiumContainer');
+    <!-- A container for the Cesium Viewer to live in. -->
+    <div id="cesiumContainer"></div>
 
-  var position = Cesium.Cartesian3.fromDegrees(39.9942785653, 116.3675724221, 0);
+    <!-- Our app code. -->
+    <!-- <script src="Source/App.js"></script> -->
+    <!-- <script src="Source/App-bak.js"></script> -->
+    <script>
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+        // let viewer = new Cesium.Viewer("cesiumContainer");
 
-  const url = './Cesium_Air (1).gltf';
-  const entity = viewer.entities.add({
-    name: url,
-    position: position,
-    // orientation: orientation,
-    model: {
-      uri: url,
-      minimumPixelSize: 128,
-      maximumScale: 20000,
-    },
-  });
-  viewer.trackedEntity = entity;
- </script>
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+            terrainProvider: Cesium.createWorldTerrain({
+                requestVertexNormals: true, //Needed to visualize slope
+            }),
+        });
+        let importByEntity = () => {
+            var position = Cesium.Cartesian3.fromDegrees(39.9942785653, 116.3675724221, 10000);
+            var entity = viewer.entities.add({
+                position: position,
+                model: {
+                    uri: "./Cesium_Air.glb",
+                    minimumPixelSize: 128,
+                    maximumScale: 20000
+                }
+            });
+            // viewer.trackedEntity = entity;
+            viewer.camera.flyTo({
+                destination: position
+            })
+        }
+        importByEntity();
+        // http://192.168.0.106:8081/Cesium_Air.glb
+        let imporByPrimitive = () => {
+            var position = Cesium.Cartesian3.fromDegrees(109.02, 34.02, 100000);
+            // 设置模型方向
+            var hpRoll = new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(45), 0, 0);
+            // 生成一个函数，该函数从以提供的原点为中心的参考帧到提供的椭圆体的固定参考帧计算4x4变换矩阵。
+            var fixedFrame = Cesium.Transforms.localFrameToFixedFrameGenerator('north', 'west');
+            var scene = viewer.scene;
+            let entity = scene.primitives.add(Cesium.Model.fromGltf({
+                // 资源路径
+                url: './Cesium_Air.glb',
+                // 模型矩阵
+                modelMatrix: Cesium.Transforms.headingPitchRollToFixedFrame(position, hpRoll, Cesium.Ellipsoid.WGS84, fixedFrame, position),
+                // 模型最小刻度
+                minimumPixelSize: 128,
+                // 模型标尺
+                scale: 2.0,
+                // 模型最大刻度
+                maximumScale: 20000,
+                // 仅用于调试。显示模型绘制时的边界球。
+                debugShowBoundingVolume: false,
+                // 仅用于调试，显示魔仙绘制时的线框
+                debugWireframe: false
+            }));
+            console.log("1111111--entity", entity);
+            viewer.camera.flyTo({
+                destination: position
+            })
+        }
+        // imporByPrimitive();
+    </script>
+
 </body>
 
 </html>
