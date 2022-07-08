@@ -1,2 +1,3 @@
 - 创建Vue2 项目
-- vue add vue-cli-plugin-cesium
+- vue add vue-cli-plugin-cesium --> 在终端选择相关配置
+- 在某个.vue中的mounted里创建 viewer
