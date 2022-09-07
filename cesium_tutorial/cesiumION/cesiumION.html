@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
     <title>CBD</title>
 
-    <script src="./Cesium/Cesium.js"></script>
-    <link href="./Cesium/Widgets/widgets.css" rel="stylesheet">
+    <script src="../Cesium/Cesium.js"></script>
+    <link href="../Cesium/Widgets/widgets.css" rel="stylesheet">
 
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <!-- <script type="text/javascript" src="./js/require.min.js" data-main="js/main"></script> -->
@@ -20,33 +22,35 @@
         }
     </style>
 </head>
+
 <body>
-<div id="cesiumContainer"></div>
+    <div id="cesiumContainer"></div>
 
-<script type="text/javascript">
-    /*示范代码说明：
-     *选取一个点作为中心点，并以此做旋转
-     *
-     *主要涉及接口：
-     * camera.flyCircle
-     * camera.flyCircleLoop
-     * camera.stopFlyCircle
-     * 示范代码：
-   */
-    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
-    
-    const viewer = new Cesium.Viewer("cesiumContainer", {
-    terrainProvider: Cesium.createWorldTerrain(),
-    });
+    <script type="text/javascript">
+        /*示范代码说明：
+         *选取一个点作为中心点，并以此做旋转
+         *
+         *主要涉及接口：
+         * camera.flyCircle
+         * camera.flyCircleLoop
+         * camera.stopFlyCircle
+         * 示范代码：
+       */
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
 
-    const tileset = new Cesium.Cesium3DTileset({
-    url: Cesium.IonResource.fromAssetId(75343),
-    });
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+            terrainProvider: Cesium.createWorldTerrain(),
+        });
 
-    viewer.scene.primitives.add(tileset);
-    viewer.zoomTo(tileset);
+        const tileset = new Cesium.Cesium3DTileset({
+            url: Cesium.IonResource.fromAssetId(75343),
+        });
+
+        viewer.scene.primitives.add(tileset);
+        viewer.zoomTo(tileset);
 
 
-</script>
+    </script>
 </body>
+
 </html>
