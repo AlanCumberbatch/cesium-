@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <!-- Include the CesiumJS JavaScript and CSS files -->
+    <title>polinevolume221027加颜色</title>
+    <script src="../Cesium/Cesium.js"></script>
+    <link href="../Cesium/Widgets/widgets.css" rel="stylesheet" />
+</head>
+<body>
+    <div
+        id="cesiumContainer"
+        style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%"
+    ></div>
+    <script>
+        // Your access token can be found at: https://cesium.com/ion/tokens.
+        // Replace `your_access_token` with your Cesium ion access token.
+
+        Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJkZDIzMmYwMy1hYTlmLTQxZWItODAyYy03MjAyMTc4YzVjOGYiLCJpZCI6NTc4MTAsImlhdCI6MTY0MTk2NjA2Nn0.ACfm4kMsXv_o3brMajCyqkORvh_6llBXF2BmD6UpRyw"; //替换成你的Token
+        Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(
+        90,
+        -20,
+        110,
+        90
+        );
+
+        // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
+        const viewer = new Cesium.Viewer("cesiumContainer", {
+        geocoder: true, //控制右上角第一个位置的查找工具
+        homeButton: true, //控制右上角第二个位置的home图标
+        sceneModePicker: true, //控制右上角第三个位置的选择视角模式，2d，3d
+        baseLayerPicker: true, //控制右上角第四个位置的图层选择器
+        navigationHelpButton: true, //控制右上角第五个位置的导航帮助按钮
+        animation: false, //控制左下角的动画器件
+        timeline: false, //控制下方时间线
+        fullscreenButton: false, //右下角全屏按钮
+        vrButton: false, //右下角vr按钮
+        shouldAnimate: true, //允许动画同步
+        infoBox: true, //不显示点击要素之后显示的信息
+
+        baseLayerPicker: false, // 底图组件，选择三维数字地球的底图（imagery and terrain）。
+        imageryProvider: gaode, // 设置影像刚度
+        // 五.加载地形数据
+        // 1.加载cesium全球地形
+        // Load Cesium World Terrain
+        terrainProvider: Cesium.createWorldTerrain({
+          requestWaterMask: true, // required for water effects（水文贴图）
+          requestVertexNormals: true, // required for terrain lighting（请求法向（光照））
+        }),
+        });
+
+        // Enable depth testing so things behind the terrain disappear.(Cesium开启地形检测)
+        viewer.scene.globe.depthTestAgainstTerrain = true; //默认为false
+
+        viewer._cesiumWidget._creditContainer.style.display = "none"; //取消版权信息
+
+        // 2.添加高德地图影像
+        var url = "https://webst02.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}";
+        var gaode = new Cesium.UrlTemplateImageryProvider({ url: url });
+
+        // // 3.Cesium加载注记要素
+        var annLayer = new Cesium.UrlTemplateImageryProvider({
+            url: "http://webst02.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scale=1&style=8",
+            minimumLevel: 3,
+            maximumLevel: 18,
+        });
+        viewer.imageryLayers.addImageryProvider(annLayer);
+
+        var cdsLayer = new Cesium.CustomDataSource("cdsLayer");
+        var coordinates = [
+        102.228681, 29.93086534, 1500, 0,
+        102.228681, 29.93087436, 1500.656455, -481.44,
+        102.228681, 29.93088338, 1501.29207, -416.28,
+        102.228681, 29.9308924, 1501.906846, -356.08,
+        102.228681, 29.93090142, 1502.500781, -300.58,
+        102.228681, 29.93091044, 1503.073877, -249.52,
+        102.228681, 29.93091946, 1503.626133, -202.64,
+        102.228681, 29.93092848, 1504.157549, -159.69,
+        102.228681, 29.93093751, 1504.668125, -120.45,
+        102.228681, 29.93094653, 1505.157861, -84.67,
+        102.228681, 29.93095555, 1505.626758, -52.14,
+        102.228681, 29.93096457, 1506.074814, -22.63,
+        102.228681, 29.93097359, 1506.502031, 4.06,
+        102.228681, 29.93098261, 1506.908408, 28.12,
+        102.228681, 29.93099163, 1507.293945, 49.77,
+        102.228681, 29.93100065, 1507.658643, 69.17,
+        102.228681, 29.93100967, 1508.0025, 86.5,
+        102.228681, 29.9310187, 1508.325518, 101.93,
+        102.228681, 29.93102772, 1508.627695, 115.61,
+        102.228681, 29.93103674, 1508.909033, 127.71,
+        102.228681, 29.93104576, 1509.169531, 138.34,
+        102.228681, 29.93105478, 1509.409189, 147.65,
+        102.228681, 29.9310638, 1509.628008, 155.76,
+        102.228681, 29.93107282, 1509.825986, 162.77,
+        102.228681, 29.93108184, 1510.003125, 168.79,
+        102.228681, 29.93109086, 1510.159424, 173.91,
+        102.228681, 29.93109989, 1510.294883, 178.21,
+        102.228681, 29.93110891, 1510.409502, 181.76,
+        102.228681, 29.93111793, 1510.503281, 184.63,
+        102.228681, 29.93112695, 1510.576221, 186.86,
+        102.228681, 29.93113597, 1510.62832, 188.49,
+        102.228681, 29.93114499, 1510.65958, 189.57,
+        102.228681, 29.93115401, 1510.67, 190.1,
+        102.228681, 29.93116303, 1510.65958, 190.1,
+        102.228681, 29.93117205, 1510.62832, 189.57,
+        102.228681, 29.93118107, 1510.576221, 188.49,
+        102.228681, 29.9311901, 1510.503281, 186.86,
+        102.228681, 29.93119912, 1510.409502, 184.63,
+        102.228681, 29.93120814, 1510.294883, 181.76,
+        102.228681, 29.93121716, 1510.159424, 178.21,
+        102.228681, 29.93122618, 1510.003125, 173.91,
+        102.228681, 29.9312352, 1509.825986, 168.79,
+        102.228681, 29.93124422, 1509.628008, 162.77,
+        102.228681, 29.93125324, 1509.409189, 155.76,
+        102.228681, 29.93126226, 1509.169531, 147.65,
+        102.228681, 29.93127129, 1508.909033, 138.34,
+        102.228681, 29.93128031, 1508.627695, 127.71,
+        102.228681, 29.93128933, 1508.325518, 115.61,
+        102.228681, 29.93129835, 1508.0025, 101.93,
+        102.228681, 29.93130737, 1507.658643, 86.5,
+        102.228681, 29.93131639, 1507.293945, 69.17,
+        102.228681, 29.93132541, 1506.908408, 49.77,
+        102.228681, 29.93133443, 1506.502031, 28.12,
+        102.228681, 29.93134345, 1506.074814, 4.06,
+        102.228681, 29.93135248, 1505.626758, -22.63,
+        102.228681, 29.9313615, 1505.157861, -52.14,
+        102.228681, 29.93137052, 1504.668125, -84.67,
+        102.228681, 29.93137954, 1504.157549, -120.45,
+        102.228681, 29.93138856, 1503.626133, -159.69,
+        102.228681, 29.93139758, 1503.073877, -202.64,
+        102.228681, 29.9314066, 1502.500781, -249.52,
+        102.228681, 29.93141562, 1501.906846, -300.58,
+        102.228681, 29.93142464, 1501.29207, -356.08,
+        102.228681, 29.93143367, 1500.656455, -416.28,
+        102.228681, 29.93144269, 1500, -481.44,
+        ];
+
+        var min = 0;
+        for (var i = 0, ilen = coordinates.length / 4; i < ilen; i += 1) {
+            if (coordinates[4 * i + 3] < min) {
+              min = coordinates[4 * i + 3];
+            }
+        }
+        var max = 0;
+        for (var i = 0, ilen = coordinates.length / 4; i < ilen; i += 1) {
+            if (coordinates[4 * i + 3] > max) {
+              max = coordinates[4 * i + 3];
+            }
+        }
+
+        console.log("最小值", min);
+        console.log("最大值:", max);
+
+        var heightScale = 1;
+        // var seriesName = "C1_";
+        for (var i = 0; i < coordinates.length - 4 && i <= 1500; i += 4) {
+            var longitude = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var height = coordinates[i + 2];
+            // var stress = coordinates[i + 3];
+
+            // 我写的
+            var longitude1 = coordinates[i + 4];
+            var latitude1 = coordinates[i + 5];
+            var height1 = coordinates[i + 6];
+            // var stress1 = coordinates[i + 7];
+
+            var qujian = max - min;
+            // console.log('区间:', qujian);
+            var x = parseInt(((max - coordinates[i + 7]) / qujian) * 1023);
+            // console.log('数值区间:', x);
+            // document.write('数值区间:', x)
+            // document.write('<br/>');
+
+            var colors = null;
+            if (x >= 0 && x < 255) {
+                colors = Cesium.Color.fromBytes(0, x, 255);
+            } else if (x >= 256 && x < 511) {
+                colors = Cesium.Color.fromBytes(0, 255, 511 - x);
+            } else if (x >= 512 && x < 767) {
+                colors = Cesium.Color.fromBytes(x - 512, 255, 0);
+            } else if (x >= 768 && x < 1024) {
+                colors = Cesium.Color.fromBytes(255, 1023 - x, 0);
+            }
+            // var colors =  Cesium.Color(255,0,255)
+            // console.log('颜色:', colors);
+            // document.write('颜色:', colors)
+            // document.write('<br/>');
+
+            var positions2 = Cesium.Cartesian3.fromDegreesArrayHeights([
+                longitude, latitude, height,
+                longitude1, latitude1, height1,
+            ]);
+            // var positions = Cesium.Cartesian3.fromDegreesArrayHeights([longitude, latitude, height]);
+            // var positions1 = Cesium.Cartesian3.fromDegreesArrayHeights([longitude1, latitude1, height1]);
+
+            function computeCircle(radius) {
+                /*此函数用于，给定半径，计算出该圆的特征点的坐标放在数组positions，
+                * 并返回该数组。*/
+                let positions = [];
+                for (let i = 0; i < 360; i++) {
+                let radians = Cesium.Math.toRadians(i);
+                positions.push(
+                  new Cesium.Cartesian2( radius * Math.cos(radians), radius * Math.sin(radians) ) );
+                }
+                return positions;
+            }
+
+            let yuanzhu = viewer.entities.add({
+                name: "yuanzhu",
+                polylineVolume: {
+                    positions: positions2,
+                    shape: computeCircle(1), // 用于指定要挤压的形状的cartesian 2位置数组
+                    material: colors,
+                },
+            });
+            viewer.flyTo(viewer.entities);
+        }
+    </script>
+</body>
+</html>

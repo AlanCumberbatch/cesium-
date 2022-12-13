@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>CBD</title>
+
+    <script src="../Cesium/Cesium.js"></script>
+    <link href="../Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <!-- <script type="text/javascript" src="./js/require.min.js" data-main="js/main"></script> -->
+    <style>
+        .min-solider {
+            background: rgba(51, 51, 51, 1);
+            border: 1px solid rgba(60, 141, 188, 1);
+            color: #ffffff;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+
+        // const viewer = new Cesium.Viewer("cesiumContainer", {
+        //     terrainProvider: Cesium.createWorldTerrain(),
+        // });
+
+        const mapbox = new Cesium.MapboxStyleImageryProvider({
+            styleId: 'streets-v11',
+            accessToken: 'pk.eyJ1IjoidXJhaGFyYTMyMSIsImEiOiJjbDQyaDdnaTgxN3ExM2pxeTNjMzRvN3lxIn0.OwTgfEZXi7Earae_erWKwA'
+        });
+
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            scene3DOnly: true,
+            // 方法一：
+            baseLayerPicker : false,
+            //Use OpenStreetMaps
+            imageryProvider : mapbox
+        })
+
+        // 方法二：
+        // viewer.imageryLayers.addImageryProvider(mapbox);
+    </script>
+</body>
+
+</html>

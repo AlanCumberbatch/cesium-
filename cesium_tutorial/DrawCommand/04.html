@@ -39,10 +39,10 @@
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo";
 
             class MyPrimitive {
-                constructor(modelMatrix) {
-                    this.modelMatrix =
-                        modelMatrix || Cesium.Matrix4.IDENTITY.clone();
+                constructor(modelMatrix,instances) {
+                    this.modelMatrix = modelMatrix || Cesium.Matrix4.IDENTITY.clone();
                     this.drawCommand = null;
+                    this.instances = instances;
                 }
 
                 /**
@@ -65,76 +65,163 @@
                     var strPickId = "czm_pickColor";
                     var czm_pickColor = pickId.color;
 
-                    var modelMatrix = this.modelMatrix;
+                    // var modelMatrix = this.modelMatrix;
 
                     // 顶点数组的创建有多种方法，通常可以将几何数据用Cesium.Geometry来表达，
                     // 然后用Cesium.VertexArray.fromGeometry可以用更少代码量完成创建。
                     //创建/组织几何数据
                     var box = new Cesium.BoxGeometry({
                         vertexFormat: Cesium.VertexFormat.POSITION_ONLY,
-                        maximum: new Cesium.Cartesian3(
-                            250000.0,
-                            250000.0,
-                            250000.0
-                        ),
-                        minimum: new Cesium.Cartesian3(
-                            -250000.0,
-                            -250000.0,
-                            -250000.0
-                        ),
+                        maximum: new Cesium.Cartesian3( 250000.0, 250000.0, 250000.0 ),
+                        minimum: new Cesium.Cartesian3( -250000.0, -250000.0, -250000.0 ),
                     });
                     var geometry = Cesium.BoxGeometry.createGeometry(box);
                     //创建顶点属性索引，key为属性名称，value为顶点属性缓冲区在同一个着色器程序中的索引。
                     //相当于将js中的顶点数组，传递到shader中的attribute变量
-                    var attributeLocations =
-                        Cesium.GeometryPipeline.createAttributeLocations(
-                            geometry
-                        ); //  Cesium.GeometryPipeline ？？？
+                    var attributeLocations = Cesium.GeometryPipeline.createAttributeLocations( geometry ); //  Cesium.GeometryPipeline ？？？
+                    var maxAttribLocation = 0;
+                    for (let location in attributeLocations) {
+                        if (attributeLocations.hasOwnProperty(location)) {
+                            maxAttribLocation = Math.max(maxAttribLocation, attributeLocations[location])
+                        }
+                    }
+
+                    var instances = this.instances, instanceCount = instances.length;
+                    var matrixVertexSizeInFloats = 16;
+
+                    var modelMatrixBuffer = this.createInstancedMatrixBuffer(context);
+                    var pickColorBuffer = this.createInstancedPickColorBuffer(context);
+                    var colorBuffer = this.createInstancedColorBuffer(context);
+
+                    var componentSizeInBytes = Cesium.ComponentDatatype.getSizeInBytes(Cesium.ComponentDatatype.FLOAT);
+                    var instancedAttributes = {
+                        //接下来4个属性分别传递modelMatrix的4行
+                        modelMatrixRow0: {
+                            index: maxAttribLocation + 1,
+                            vertexBuffer: modelMatrixBuffer,
+                            componentsPerAttribute: 4,
+                            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                            normalize: false,
+                            offsetInBytes: 0,
+                            strideInBytes: componentSizeInBytes * matrixVertexSizeInFloats,
+                            instanceDivisor: 1
+                        },
+                        modelMatrixRow1: {
+                            index: maxAttribLocation + 2,
+                            vertexBuffer: modelMatrixBuffer,
+                            componentsPerAttribute: 4,
+                            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                            normalize: false,
+                            offsetInBytes: componentSizeInBytes * 4,
+                            strideInBytes: componentSizeInBytes * matrixVertexSizeInFloats,
+                            instanceDivisor: 1
+                        },
+                        modelMatrixRow2: {
+                            index: maxAttribLocation + 3,
+                            vertexBuffer: modelMatrixBuffer,
+                            componentsPerAttribute: 4,
+                            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                            normalize: false,
+                            offsetInBytes: componentSizeInBytes * 8,
+                            strideInBytes: componentSizeInBytes * matrixVertexSizeInFloats,
+                            instanceDivisor: 1
+                        },
+                        modelMatrixRow3: {
+                            index: maxAttribLocation + 4,
+                            vertexBuffer: modelMatrixBuffer,
+                            componentsPerAttribute: 4,
+                            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                            normalize: false,
+                            offsetInBytes: componentSizeInBytes * 12,
+                            strideInBytes: componentSizeInBytes * matrixVertexSizeInFloats,
+                            instanceDivisor: 1
+                        },
+                        //传递各个实例的颜色
+                        color: {
+                            index: maxAttribLocation + 5,
+                            vertexBuffer: colorBuffer,
+                            componentsPerAttribute: 4,
+                            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                            normalize: false,
+                            offsetInBytes: 0,
+                            strideInBytes: componentSizeInBytes * 4,
+                            instanceDivisor: 1
+                        },
+                        //传递各个实例的pickId，实现点选单个实例
+                        pickColor: {
+                            index: maxAttribLocation + 6,
+                            vertexBuffer: pickColorBuffer,
+                            componentsPerAttribute: 4,
+                            componentDatatype: Cesium.ComponentDatatype.FLOAT,
+                            normalize: false,
+                            offsetInBytes: 0,
+                            strideInBytes: componentSizeInBytes * 4,
+                            instanceDivisor: 1
+                        }
+                    };
+
+                    var vertexArrayAttributes = []
+                    for (var location in instancedAttributes) {
+                        if (instancedAttributes.hasOwnProperty(location)) {
+                            attributeLocations[location] = ++maxAttribLocation;
+                            vertexArrayAttributes.push(instancedAttributes[location])
+                        }
+                    }
+
                     //创建顶点数组对象
                     var va = Cesium.VertexArray.fromGeometry({
                         context: context,
                         geometry: geometry,
                         attributeLocations: attributeLocations,
+                        vertexArrayAttributes: vertexArrayAttributes//传递Geometry.attributes之外的附加属性。
                     });
 
                     // uniform类pickId： 如果DrawCommand绘制的是单一要素，所绘制的内容就是一个整体，则使用uniform，所有顶点的pickId颜色是一样的，通过uniformMap来传递；
                     var vs = `
                     attribute vec3 position;
+                    attribute vec3 normal;
+
+                    //用4个4维向量存储实例化模型变换矩阵
+                    attribute vec4 modelMatrixRow0;
+                    attribute vec4 modelMatrixRow1;
+                    attribute vec4 modelMatrixRow2;
+                    attribute vec4 modelMatrixRow3;
+                    //声明pickColor属性，接收实例pickId颜色
+                    attribute vec4 pickColor;
+                    //声明pickColor属性，接收实例的颜色
+                    attribute vec4 color;
+
+                    varying vec3 v_normal;
+                    varying vec4 v_color;
+                    varying vec4 ${strPickId};
+
                     void main(){
-                        gl_Position = czm_projection  * czm_modelView * vec4( position , 1. );
+                        v_color=color;
+                        ${strPickId}=pickColor;
+                        //还原modelMatrix
+                        mat4 modelMatrix = mat4(
+                            modelMatrixRow0.x, modelMatrixRow1.x, modelMatrixRow2.x, modelMatrixRow3.x,
+                            modelMatrixRow0.y, modelMatrixRow1.y, modelMatrixRow2.y, modelMatrixRow3.y,
+                            modelMatrixRow0.z, modelMatrixRow1.z, modelMatrixRow2.z, modelMatrixRow3.z,
+                            modelMatrixRow0.w, modelMatrixRow1.w, modelMatrixRow2.w, modelMatrixRow3.w
+                        );
+
+                        mat4 modelView = czm_view * modelMatrix ;
+                        mat3 normalMatrix = mat3(modelMatrix);
+                        v_normal = normalMatrix * normal;
+
+                        gl_Position = czm_projection  * modelView * vec4( position , 1. );
                     }
                     `;
                     var fs = `
-                    uniform vec3 color;
+                    varying vec4 ${strPickId};
+                    varying vec3 v_normal;
+                    varying vec4 v_color;
 
-                    uniform vec4 ${strPickId};
                     void main(){
-                        gl_FragColor=vec4( color , 1. );
+                        gl_FragColor=vec4( v_color , 1. );
                     }
                     `;
-                    // varying类pickId：
-                    //        如果绘制的是多个要素，绘制内容可能分为多个部件，只是合并为一个批次来渲染，
-                    //        可能每个部件需要能够被单独点击拾取，则使用varying，
-                    //        需要将每一个部件要素的pickId颜色写入对应的几何顶点属性，顶点着色器接收颜色值，并通过varying传递到偏远着色器。
-                    // var vs = `
-                    // attribute vec3 position;
-                    // //声明pickColor属性，接收顶点pickId颜色
-                    // attribute vec4 pickColor;
-                    // //
-                    // varying vec4 ${strPickId};
-                    // void main(){
-                    //     ${strPickId}=pickColor;
-                    //     gl_Position = czm_projection  * czm_modelView * vec4( position , 1. );
-                    // }
-                    // `;
-                    // var fs = `
-                    // uniform vec3 color;
-                    // //
-                    // varying vec4 ${strPickId};
-                    // void main(){
-                    //     gl_FragColor=vec4( color , 1. );
-                    // }
-                    // `;
 
                     // 着色器程序，负责编译、链接顶点着色器（vertexShader）、片元着色器（fragmentShader）。
                     var shaderProgram = Cesium.ShaderProgram.fromCache({
@@ -173,6 +260,11 @@
                         pass: Cesium.Pass.OPAQUE,
                         //
                         pickId: strPickId,
+                        //
+                        receiveShadows: false,
+                        castShadows: true,
+                        //指定实例数量
+                        instanceCount: instanceCount
                     });
                 }
 
@@ -254,6 +346,132 @@
                         values: pickColors,
                     });
                 }
+
+                /**
+                 *
+                 * shader中attribute的数据类型维度最多为 4，也就是vec4，而modelMatrix是一个4x4矩阵，
+                 * 即mat4，因此我们需要四个vec4来传递一个mat4，分别传递mat4的 4 行。
+                 *
+                 * @param {Cesium.Context} context
+                 * @returns {Cesium.Buffer}
+                 */
+                createInstancedMatrixBuffer(context) {
+                    let instances = this.instances,
+                        instanceCount = instances.length,
+                        vertexSizeInFloats = 16,
+                        bufferData = new Float32Array(instanceCount * vertexSizeInFloats);
+
+                    for (let i = 0; i < instanceCount; i++) {
+                        const instance = instances[i],
+                            instanceMatrix = instance.matrix,
+                            offset = i * vertexSizeInFloats;
+
+                        //第一行
+                        bufferData[offset] = instanceMatrix[0]
+                        bufferData[offset + 1] = instanceMatrix[4]
+                        bufferData[offset + 2] = instanceMatrix[8]
+                        bufferData[offset + 3] = instanceMatrix[12]
+                        //第二行
+                        bufferData[offset + 4] = instanceMatrix[1]
+                        bufferData[offset + 5] = instanceMatrix[5]
+                        bufferData[offset + 6] = instanceMatrix[9]
+                        bufferData[offset + 7] = instanceMatrix[13]
+                        //第三行
+                        bufferData[offset + 8] = instanceMatrix[2]
+                        bufferData[offset + 9] = instanceMatrix[6]
+                        bufferData[offset + 10] = instanceMatrix[10]
+                        bufferData[offset + 11] = instanceMatrix[14]
+                        //第四行
+                        bufferData[offset + 12] = instanceMatrix[3]
+                        bufferData[offset + 13] = instanceMatrix[7]
+                        bufferData[offset + 14] = instanceMatrix[11]
+                        bufferData[offset + 15] = instanceMatrix[15]
+                    }
+
+                    let vertexBuffer = Cesium.Buffer.createVertexBuffer({
+                        context: context,
+                        typedArray: bufferData,
+                        usage: Cesium.BufferUsage.STATIC_DRAW
+                    });
+
+                    return vertexBuffer;
+                }
+
+                /**
+                 *
+                 * 为每个实例创建一个pickId，将所有pickId的颜色用一个顶点属性来传递。
+                 * 下面的代码，构造各个实例pickId的颜色缓冲区。
+                 *
+                 * @param {Cesium.Context} context
+                 * @returns {Cesium.Buffer}
+                 */
+                createInstancedPickColorBuffer(context) {
+                    let instances = this.instances,
+                        instanceCount = instances.length,
+                        vertexSizeInFloats = 4,
+                        bufferData = new Float32Array(instanceCount * vertexSizeInFloats);
+
+                    for (let i = 0; i < instanceCount; i++) {
+                        const instance = instances[i],
+                            instancePickId = context.createPickId({
+                                instance: instance,
+                                primitive: this,
+                                description: `实例id：${instance.id}`
+                            }),
+                            pickColor = instancePickId.color,
+                            offset = i * vertexSizeInFloats;
+                        instance.pickId = instancePickId
+
+                        bufferData[offset] = pickColor.red
+                        bufferData[offset + 1] = pickColor.green
+                        bufferData[offset + 2] = pickColor.blue
+                        bufferData[offset + 3] = pickColor.alpha
+                    }
+
+                    let vertexBuffer = Cesium.Buffer.createVertexBuffer({
+                        context: context,
+                        typedArray: bufferData,
+                        usage: Cesium.BufferUsage.STATIC_DRAW
+                    });
+
+                    return vertexBuffer;
+                }
+
+                /**
+                 *
+                 * 在创建实例时就为实例创建了一个颜色，结果各个立方体的颜色应该是不尽相同的。
+                 * 这里和pickColor的处理方法一样。
+                 * 在创建实例时就为实例创建了一个颜色，结果各个立方体的颜色应该是不尽相同的。这里和pickColor的处理方法一样。
+                 *
+                 * @param {Cesium.Context} context
+                 * @returns {Cesium.Buffer}
+                 */
+                createInstancedColorBuffer(context) {
+                    let instances = this.instances,
+                        instanceCount = instances.length,
+                        vertexSizeInFloats = 4,
+                        bufferData = new Float32Array(instanceCount * vertexSizeInFloats);
+
+                    for (let i = 0; i < instanceCount; i++) {
+                        const instance = instances[i],
+                            instanceColor = instance.color,
+                            offset = i * vertexSizeInFloats;
+
+                        bufferData[offset] = instanceColor.red
+                        bufferData[offset + 1] = instanceColor.green
+                        bufferData[offset + 2] = instanceColor.blue
+                        bufferData[offset + 3] = instanceColor.alpha
+                    }
+
+                    let vertexBuffer = Cesium.Buffer.createVertexBuffer({
+                        context: context,
+                        typedArray: bufferData,
+                        usage: Cesium.BufferUsage.STATIC_DRAW
+                    });
+
+                    return vertexBuffer;
+                }
+
             }
 
             var viewer = new Cesium.Viewer("cesiumContainer");
@@ -265,10 +483,25 @@
             // var primitive = new MyPrimitive(modelMatrix);
             // viewer.scene.primitives.add(primitive);
 
-            var origin = Cesium.Cartesian3.fromDegrees(106, 26, 250000);
-            var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
-            var primitive = new MyPrimitive(modelMatrix);
-            viewer.scene.primitives.add(primitive);
+            // var origin = Cesium.Cartesian3.fromDegrees(106, 26, 250000);
+            // var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin);
+            // var primitive = new MyPrimitive(modelMatrix);
+            // viewer.scene.primitives.add(primitive);
+
+            var instances = [];
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 10; j++) {
+                    var origin = Cesium.Cartesian3.fromDegrees(106 + 0.01 * i, 26 + 0.01 * j, 250)
+                    var modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(origin)
+                    instances.push({
+                        id: 'instance' + i,
+                        color: Cesium.Color.fromRandom({ alpha: 255 }),
+                        matrix: modelMatrix
+                    })
+                }
+            }
+            var primitive = new MyPrimitive(null, instances);
+            viewer.scene.primitives.add(primitive)
 
             //拾取结果高亮
             // var edgedStage = createEdgeStage();
