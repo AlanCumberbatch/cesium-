@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>customCesiumLabel</title>
+
+    <script src="../Cesium/Cesium.js"></script>
+    <link href="../Cesium/Widgets/widgets.css" rel="stylesheet">
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <!-- <script type="text/javascript" src="./js/require.min.js" data-main="js/main"></script> -->
+    <style>
+        .min-solider {
+            background: rgba(51, 51, 51, 1);
+            border: 1px solid rgba(60, 141, 188, 1);
+            color: #ffffff;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cesiumContainer"></div>
+
+    <script type="text/javascript">
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5ODk1NmMwNC02MjYwLTQyZWUtYTIxMy1lMjgwMTA3NWE1MmIiLCJpZCI6NDI2NzgsImlhdCI6MTYxMTcwOTEzMH0.DwVnaNdLhZd8miWzYmC9O2k2F4_ODdrWU3EFZRbOWLo';
+
+        // const viewer = new Cesium.Viewer("cesiumContainer", {
+        //     terrainProvider: Cesium.createWorldTerrain(),
+        // });
+
+        const mapbox = new Cesium.MapboxStyleImageryProvider({
+            styleId: 'streets-v11',
+            accessToken: 'pk.eyJ1IjoidXJhaGFyYTMyMSIsImEiOiJjbDQyaDdnaTgxN3ExM2pxeTNjMzRvN3lxIn0.OwTgfEZXi7Earae_erWKwA'
+        });
+
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            scene3DOnly: true,
+            // 方法一：
+            baseLayerPicker : false,
+            //Use OpenStreetMaps
+            imageryProvider : mapbox
+        })
+
+        // reference link: https://blog.csdn.net/weixin_46730573/article/details/119061305?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-119061305-blog-120160101.pc_relevant_3mothn_strategy_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1-119061305-blog-120160101.pc_relevant_3mothn_strategy_recovery&utm_relevant_index=2
+        /*
+            基本思路：
+                1. 将DOM元素渲染到cesium容器中，
+                2. 利用cesium中提供的 viewer.scene.postRender 实时更新坐标位置
+        */
+        function addDynamicLabel(data){
+            /*
+                data{ position:[106,125]，title:"标题"，id:"0" }
+                    position：经纬度
+                    title：文本标题，
+                    id：唯一标识
+
+            */
+            let div = document.createElement("div");
+            div.id = data.id;
+            div.style.position = "absolute";
+            div.style.width = "100px";
+            div.style.height = "30px";
+            let HTMLTable = `
+        		<div style="background:rgba(255,122,0,0.4)">${data.title}</div>
+            `;
+            div.innerHTML = HTMLTable;
+            viewer.cesiumWidget.container.appendChild(div);
+
+            /*
+                虽然我们将div添加到了cesium容器中，但是并不能显示到我们想要的位置，
+                具体原因是因为我们并未有给添加的标签设置top和left值，
+                接下来我们需要根据传入的坐标转换成屏幕xy值，
+                我们可以利用cesium中提供的 Cesium.SceneTransforms.wgs84ToWindowCoordinates() 方法进行转化
+            */
+            let gisPosition = Cesium.Cartesian3.fromDegrees(
+                data.position[0],
+                data.position[1],
+                0
+            );
+            // const canvasHeight = viewer.scene.canvas.height;
+            // const windowPosition = new Cesium.Cartesian2();
+            // Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+            //     viewer.scene,
+            //     gisPosition,
+            //     windowPosition
+            // );
+            // div.style.bottom = canvasHeight - windowPosition.y + "px";
+            // const elWidth = div.offsetWidth;
+            // div.style.left = windowPosition.x - elWidth / 2 + "px";
+
+            /*
+                现在咱们自定义的标记已经显示到我们想要的位置了，
+                但是我们还出现了一个问题我们在移动地球的时候，标签不会跟着动，总不能不能让用户操作呀，在那摆着当个花瓶看。
+                那不可能，我们可以在看cesium给咱们提供的文档中有一个 viewer.scene.postRender 方法实时更新位置
+            */
+            //实时更新位置
+            viewer.scene.postRender.addEventListener(() => {
+        	    const canvasHeight = viewer.scene.canvas.height;
+        	    const windowPosition = new Cesium.Cartesian2();
+        	    Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+        	        viewer.scene,
+        	        gisPosition,
+        	        windowPosition
+        	    );
+        	    div.style.bottom = canvasHeight - windowPosition.y + "px";
+        	    const elWidth = div.offsetWidth;
+        	    div.style.left = windowPosition.x - elWidth / 2 + "px";
+
+                //解决滚动不隐藏问题
+        		const camerPosition = viewer.camera.position;
+                let height = viewer.scene.globe.ellipsoid.cartesianToCartographic(camerPosition).height;
+                height += viewer.scene.globe.ellipsoid.maximumRadius;
+                // console.log(camerPosition,val.position )
+                if((!(Cesium.Cartesian3.distance(camerPosition,gisPosition ) > height))&&viewer.camera.positionCartographic.height<50000000){
+                    div.style.display = "block"
+                }else{
+                    div.style.display = "none"
+                }
+            }, this);
+
+        }
+        addDynamicLabel({ position:[106,125], title:"标题", id:"0" })
+
+    </script>
+</body>
+
+</html>
