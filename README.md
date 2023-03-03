@@ -15,7 +15,7 @@
 
 ## [此外: -Otherwise:](#)
 
-- [用得到的计算机图形学的知识 -Useful knowledge about CG in Cesium](./CG/CG_baisc.md)
+- [用得到的计算机图形学的知识 -Useful knowledge about CG in Cesium](./CG/README.md)
 - [DEM 曲率计算及其他相关数学内容](https://help.supermap.com/iDesktop/zh/tutorial/Analyst/Raster/SurfaceAnalyst/CalculateCurvature)
 
 

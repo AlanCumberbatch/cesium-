@@ -10,6 +10,12 @@ After read tutorial in offical website, I think it's great for people who wants 
 
 ## [Entity API & Primitive API in Cesium](../cesium_SourceCode/connectin_Entity_to_Primitive_1.85.0/Primitive_vs_Entity.md)
 
+## [DrawCommand in Cesium](./DrawCommand/README.md)
+
+## [Renderer in Cesium](./CesiumRenderer/README.md)(未完全)
+
+## [Cesium.Ion](./cesiumION/cesiumION.html)
+
 ## [Cesium相关的好用方法(不可点击)](#):
 
 - [Cesium 坐标转换](./Tips_utils/coordTrans.md)
