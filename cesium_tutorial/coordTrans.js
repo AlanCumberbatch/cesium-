@@ -62,3 +62,5 @@ let b = Cesium.Math.toDegrees(radians);
     Cesium.Quaternion（四元数，用于描述围绕某个向量旋转一定角度的变换）
     Cesium.Transforms(包含将位置转换为各种参考系的功能)
 */
+
+// 如何根据不同的direction，up，right确定不同的 矩阵/旋转矩阵
