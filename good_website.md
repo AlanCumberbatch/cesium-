@@ -1,1 +1,0 @@
-- [DEM 曲率计算及其他相关数学内容](https://help.supermap.com/iDesktop/zh/tutorial/Analyst/Raster/SurfaceAnalyst/CalculateCurvature)

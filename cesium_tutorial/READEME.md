@@ -8,13 +8,32 @@ Almost all of the resource files and related links are not available in this tut
 在看过 Cesium 英文版官网后，发现还是直接看官网文档来的香。<br/>
 After read tutorial in offical website, I think it's great for people who wants to know Cesium.
 
-## [Entity API & Primitive API in Cesium](../cesium_miniature/about_sourceCode/Entity_API_and_Primitive_API.md)
-## [Cesium 坐标转换](./cesium_XYZ.md)
-## [Cesium 中的内部图元哪些是继承自Primitive哪些是**Collection](./whether_from_Primitive.md)
-<!-- ## [Cesium 中空间面积测量](./measureAreaSpace.md) -->
-## [Cesium 中航线差值](../CG/routeDiff/routeDifference.md) //先参照 Cesium 内部的
-<!-- ## [Cesium 中高程查询](./ElevationQuery.md) // 初步结论：可以通过经纬度进行计算，但是具体计算方法还需进一步查找 -->
+## [Entity API & Primitive API in Cesium](../cesium_SourceCode/connectin_Entity_to_Primitive_1.85.0/Primitive_vs_Entity.md)
 
-## [3D Tiles](3D_Tiles.md)
+## [Cesium相关的好用方法(不可点击)](#):
 
-## [Cesium tips](useful_tips/index.md)
+- [Cesium 坐标转换](./Tips_utils/coordTrans.md)
+- [measureAreaSpace](./Tips_utils/measureAreaSpace.md)
+
+- [3D_calculate JS](./Tips_utils/3D_calculate.js)
+- [3D_compute JS](./Tips_utils/3D_compute.js)
+- [translation JS](./Tips_utils/translation.js)
+
+
+- [Cesium 中航线差值](../CG/routeDiff/routeDifference.md) //先参照 Cesium 内部的
+<!-- - [Cesium 中高程查询](./ElevationQuery.md) // 初步结论：可以通过经纬度进行计算，但是具体计算方法还需进一步查找  -->
+
+
+## [Cesium相关的值得注意的tips(不可点击)](#):
+
+这些tips的来源有：源码，博客，CG，项目经验等，也欢迎大家踊跃分享。</br>
+-[Cesium 中的内部图元哪些是继承自Primitive哪些是**Collection](./Tips_intro/whether_from_Primitive.md)
+
+
+
+<!-- ## [3D Tiles](3D_Tiles.md) -->
+
+## Others:
+
+- [Cesium加载WMTS服务，4326和3857](https://blog.csdn.net/lhjuejiang/article/details/127407987)
+
