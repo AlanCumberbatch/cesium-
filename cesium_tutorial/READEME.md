@@ -14,6 +14,7 @@ After read tutorial in offical website, I think it's great for people who wants 
 
 - [Cesium 坐标转换](./Tips_utils/coordTrans.md)
 - [measureAreaSpace](./Tips_utils/measureAreaSpace.md)
+- [custom Primitive Material](./Fabric/README.md)
 
 - [3D_calculate JS](./Tips_utils/3D_calculate.js)
 - [3D_compute JS](./Tips_utils/3D_compute.js)

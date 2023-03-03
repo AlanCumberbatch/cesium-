@@ -11,9 +11,7 @@
 ## [Cesium 教程 -Tutorial for Cesium(include some tips from the blogs and articles)](cesium_tutorial/READEME.md) (里面有demo)
 
 ## [我目前存在的疑问](./cesium_tutorial/problems_i_am_holding/README.md)
-## [其他相关的github项目](#)
 
-- [Fabric](./cesium_tutorial/Fabric/README.md)
 
 ## [此外: -Otherwise:](#)
 
