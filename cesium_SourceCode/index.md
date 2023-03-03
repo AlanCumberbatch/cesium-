@@ -11,4 +11,8 @@ Stuff in these linked links is right. It show the connection and difference betw
 </br>
 Others to note about source code:</br>
 
-- [Tips form Cesium Source Code](./CesiumTips.md)
+- [Tips form Cesium Source Code](#):
+  - 文字信息:
+  - [Render_must_be_called_Between_Picks](./Tips_intro/Render_must_be_called_Between_Picks.md)
+  - utils:
+  - [Inspector](Tips_utils/Inspector.md)
