@@ -154,4 +154,4 @@ int main()
 	cout << "面积：" << tf.GetSumArea() << endl;
 
 	return 0;
-}s
+}

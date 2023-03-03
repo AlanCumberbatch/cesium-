@@ -7,7 +7,7 @@
  - [reference link](https://sites.cs.ucsb.edu/~lingqi/teaching/resources/GAMES101_Lecture_04.pdf)//在第9页<br/>
 
 其中：
-  - pitch 是X轴旋转，也叫俯仰角<br/>
+  - pitch 是围绕X轴旋转，也叫俯仰角<br/>
   ![pitch](../images/pitch.gif)
   - yaw 是围绕 Y 轴旋转，也叫偏航角<br/>
   ![yaw](../images/yaw.gif)
