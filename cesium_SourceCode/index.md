@@ -1,3 +1,4 @@
+## [- Entity API & Primitive API](#)
 里面的结论是不正确的，但是里面包含了我最初阅读源码的过程，是否有益因人而异.</br>
 The conclusion is not correct in the followed two links,but the thinking process of me when i was watching the source code of Cesium is concluded.</br>
 - [0_TO_1_about: viewer.entities.add](0_TO_1_about/index_entities_add.md)
@@ -8,10 +9,14 @@ The conclusion is not correct in the followed two links,but the thinking process
 Stuff in these linked links is right. It show the connection and difference between Entity and Primitive in Cesium. And if there is somethings wrong, i would be so glad to be told directly.
 - [Entity API & Primitive API](./connectin_Entity_to_Primitive_1.85.0/Primitive_vs_Entity.md)
 
-</br>
-Others to note about source code:</br>
+## [- How a view Matrix is created in Cesium](./viewMatrix_in_cesium.md)
 
-- [Tips form Cesium Source Code](#):
+
+## [- How a Frustm is created in Cesium (click)](./Frustum_in_cesium.md)
+
+
+## [- Tips form Cesium Source Code](#):
+
   - 文字信息:
   - [Render_must_be_called_Between_Picks](./Tips_intro/Render_must_be_called_Between_Picks.md)
   - utils:
