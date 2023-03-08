@@ -2,7 +2,7 @@
  *
  * demo:
  * let primitive = viewer.scene.primitive.add(
- *    new CustomTriangleDrawCommand(viewer,{
+ *    new CustomDrawCommand(viewer,{
  *      modelMatrix:modelMatrix,      //must
  *      positionArray:positionArray   //must
  *      vs:vs,                        //must
@@ -15,7 +15,7 @@
  *    })
  * )
  * */
-class CustomTriangleDrawCommand {
+class CustomDrawCommand {
 
   constructor(viewer, options={}){
     this.viewer = viewer;// depends on where u want to add this to the scene
@@ -264,4 +264,4 @@ class CustomTriangleDrawCommand {
   }
 }
 
-export default CustomTriangleDrawCommand;
+export default CustomDrawCommand;
