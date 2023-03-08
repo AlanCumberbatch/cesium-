@@ -1,16 +1,18 @@
-#### [reference link](https://mp.weixin.qq.com/s?__biz=Mzg2MzY4NTMxNw==&mid=2247485570&idx=1&sn=f29485c9f13255a64310653a2446e236&chksm=ce759728f9021e3e6ca78a85765ac9569c5248ee47440d1a0098b93beeb99315eee144015c15&cur_album_id=2064203226035355654&scene=190#rd)
-#### 具体内容/Content
+## [reference link](https://mp.weixin.qq.com/s?__biz=Mzg2MzY4NTMxNw==&mid=2247485570&idx=1&sn=f29485c9f13255a64310653a2446e236&chksm=ce759728f9021e3e6ca78a85765ac9569c5248ee47440d1a0098b93beeb99315eee144015c15&cur_album_id=2064203226035355654&scene=190#rd)
+## [具体内容/Content](#)
 - [Cesium 高性能扩展之DrawCommand（一）：入门](./01.html)
 - [Cesium 高性能扩展之DrawCommand（二）：OSGB倾斜模型展示应用](02.html) // 暂时没看
 - [Cesium 高性能扩展之DrawCommand（三）：显隐和点选](03.html)
 - [Cesium 高性能扩展之 DrawCommand（四）：阴影和实例化](04.html)
 
-#### 引出的问题
+## [Custom DrawCommand in Cesium](CustomDrawCommand.js)
+
+## 引出的问题
 - 01
-  - 几种常见的站心坐标系，ENU坐标系：Cesium.Transforms.eastNorthUpToFixedFrame( Cartesian3 ) --》 几种？ Cesium中涉及到几种？
-- 03
+  - 几种常见的站心坐标系，ENU坐标系：Cesium.Transforms.eastNorthUpToFixedFrame( Cartesian3 ) --》 几种？ Cesium中涉及到几种？ --- 源码里有
+- 02
   - 关于添加 轮廓描边 ---当前博客内有相关文档
-  - 这里简单介绍基于batchId的显隐控制实现思路：(后期尝试多多阅读相关源码)
+  - 这里简单介绍基于 batchId 的显隐控制实现思路：(后期尝试多多阅读相关源码)
     - 为每一个要素创建batchId，从0开始编号；
     - 为要素几何体创建batchId顶点属性，并将batchId值逐个写入顶点属性数组；
     - 合并所有要素几何体；
