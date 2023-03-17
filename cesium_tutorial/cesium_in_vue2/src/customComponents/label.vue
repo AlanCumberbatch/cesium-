@@ -1,5 +1,6 @@
 <template>
-  <div :id="id" class="divlabel-container" v-if="show" @click="labelClicK">
+  <!--  @click="labelClicK"  添加了点击事件也用不了。。。。。 -->
+  <div :id="id" class="divlabel-container" v-if="show">
     <div class="animate-maker-border">
       <span class="animate-marker__text">{{ title }}</span>
     </div>
@@ -26,17 +27,23 @@ export default {
     }
   },
   methods: {
-    labelClicK() {
+    labelClick() {
       console.log('labelClicK --- in label.vue')
     },
+    labelDblclick() {
+      console.log('labelDblclick --- in label.vue')
+    },
+
+
     getDomWidthAndHeight() {
-      let label = document.getElementsByClassName('divlabel-container');
-      console.log('%c [ label ]-34', 'font-size:13px; background:pink; color:#bf2c9f;', label.style)
+      let label = document.getElementsByClassName('animate-maker-border');
+
+      // label[0].offsetHeight,label[0].offsetWidth // 只有在 label 能够显示的时候才会有值
+      return [label[0].offsetWidth, label[0].offsetHeight];
     }
   },
 };
 </script>
-
 
 <style >
 .divlabel-container , .divlabel-container::before, .divlabel-container::after {

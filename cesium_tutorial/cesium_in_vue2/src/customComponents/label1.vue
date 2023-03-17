@@ -25,6 +25,22 @@ export default {
         default:'001'
     }
   },
+  methods: {
+    labelClick() {
+      console.log('labelClicK --- in label.vue')
+    },
+    labelDblclick() {
+      console.log('labelDblclick --- in label.vue')
+    },
+
+
+    getDomWidthAndHeight() {
+      let label = document.getElementsByClassName('animate-maker-border');
+
+      // label[0].offsetHeight,label[0].offsetWidth // 只有在 label 能够显示的时候才会有值
+      return [label[0].offsetWidth, label[0].offsetHeight];
+    }
+  },
 };
 </script>
 

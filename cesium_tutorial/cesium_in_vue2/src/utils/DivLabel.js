@@ -88,23 +88,26 @@ function customLabel(viewer, data) {
 
 import Vue from 'vue';
 // 不同的Label在 setColor 方法中需要进行相应的更改
-// import Label0 from '../customComponents/label0.vue';// 边框有效果的 label
-// import Label1 from '../customComponents/label1.vue';// 只是有边框的 label
+// import Label from '../customComponents/label0.vue';// 边框有效果的 label
+import Label from '../customComponents/label1.vue';// 只是有边框的 label
 // import Label2 from '../customComponents/label1.vue';// 一个点，有边缘扩散效果--- 点时隐时现
 // import Label3 from '../customComponents/label1.vue';// 一个点，有边缘扩散效果--- 点一直存在
-import Label from '../customComponents/label.vue';
+// import Label from '../customComponents/label.vue';
 let WindowVm = Vue.extend(Label);// ???--- VUE官网中可以用Vue.extend + $mount，构造器来创建子类。
 
 export default class DivLabel{
   constructor(val) {
+    // this.show = true;
     this.viewer = val.viewer;
     this.height = val.height;
+    this.rawPos = val.position;
     this.position = Cesium.Cartesian3.fromDegrees(
       val.position[0],
       val.position[1],
       val.height
     );
-    this.posRangeInCanvas = {x:[],y:[]};// 用于判断当前label在Canvas坐标系中的位置范围
+    this.posRangeInCanvas = { x: [], y: [] };// 用于判断当前label在Canvas坐标系中的位置范围
+
 
     let title = val.title;
     let id = val.id
@@ -114,14 +117,28 @@ export default class DivLabel{
         id
       }
     }).$mount(); //根据模板创建一个面板
-    // let labelDom =
-    val.viewer.cesiumWidget.container.appendChild(this.vmInstance.$el); //将字符串模板生成的内容添加到DOM上
-    // labelDom.addEventListener('click', function () {
-    //   console.log('labelClicK --- in DivLabel.js')
-    // })
+    let labelDom = val.viewer.cesiumWidget.container.appendChild(this.vmInstance.$el); //将字符串模板生成的内容添加到DOM上
+    // labelDom.addEventListener('click', this.vmInstance.labelClick)
+    // labelDom.addEventListener('dblclick', this.vmInstance.labelDblclick)
+    // labelDom.addEventListener('click', this.vmInstance.labelDblclick)
 
     this.addPostRender();
-    this.updatePosInCanvasCoord();
+    // this.updatePosInCanvasCoord();
+
+
+    // for test
+    this.num = 11111;
+  }
+
+  // init(){}
+  // create(){}
+  update(){}
+  destroy() {
+    // this.show = false;
+    this.viewer.cesiumWidget.container.removeChild(this.vmInstance.$el)
+  }
+  display() {
+    this.viewer.cesiumWidget.container.appendChild(this.vmInstance.$el)
   }
 
   //添加场景事件
@@ -159,7 +176,7 @@ export default class DivLabel{
     this.posRangeInCanvas.x[0] = canvasX;
     this.posRangeInCanvas.x[1] = canvasX+Number(this.vmInstance.$el.style.width);
     // console.log('%c [ this.vmInstance.$el.style ]-161', 'font-size:13px; background:pink; color:#bf2c9f;', this.vmInstance)
-    this.vmInstance.getDomWidthAndHeight()
+    // this.vmInstance.getDomWidthAndHeight()
     // console.log('%c [ this.vmInstance.$el.style ]-161', 'font-size:13px; background:pink; color:#bf2c9f;', this.vmInstance.$el.style)
     this.posRangeInCanvas.y[0] = canvasY;
     this.posRangeInCanvas.y[1] = canvasY+Number(this.vmInstance.$el.style.height);
@@ -179,9 +196,6 @@ export default class DivLabel{
     }else{
       this.vmInstance.$el.style.display = "none";
     }
-
-    // console.log('%c [ this.posRangeInCanvas ]-172', 'font-size:13px; background:pink; color:#bf2c9f;', this.posRangeInCanvas)
-
   }
 
   setColor() {
@@ -200,6 +214,68 @@ export default class DivLabel{
     // this.posRangeInCanvas = {x:[],y:[]};// 用于判断当前label在Canvas坐标系中的位置范围
 
     // 想要进行对比，就需要获取 Canvas 坐标系内的坐标才能进行对比
+  }
+
+  // 关于 选中
+  // To judge whether cur label could be selected in this click event.  用来判断当前label在此次click事件中是否是可能被选中的一个
+  accessibleOrNot(clickWindowPos) {// clickWindowPos --- Canvas 坐标系里的坐标
+    // 通过判断 clickWindowPos 是否在 当前 label 的 屏幕坐标 的宽高 的范围内， 来判断是否可以被选择
+    const labelWindowPosition = new Cesium.Cartesian2();
+    Cesium.SceneTransforms.wgs84ToWindowCoordinates(
+      this.viewer.scene,
+      this.position,
+      labelWindowPosition
+    );// label 的屏幕坐标
+    // console.log('%c [ labelWindowPosition ]-211', 'font-size:13px; background:pink; color:#bf2c9f;', labelWindowPosition)
+
+    let [width, height] = this.vmInstance.getDomWidthAndHeight();// 这个 width，height 需要时时机显示样式的区域的面积，最好可以确定
+    // 此种方式创建的 label，this.position 是在label的左上角
+
+    // 在 canvas 坐标系中 进行比较，确定 当前 click 的 position 是否在 label 所在的平面中
+    /*
+      判断 点 是否在当前 label 所在的 Cartesian2 平面中
+      |—— —— —— ——> x+
+      |  —— —— —— ——
+      |  |         ｜  .
+      |  |    .    ｜
+      |  —— —— —— ——
+      v
+      y+
+    */
+    if (
+      (clickWindowPos.x - labelWindowPosition.x >= 0 && clickWindowPos.y - labelWindowPosition.y >= 0)
+      && (labelWindowPosition.x + width - clickWindowPos.x >= 0 && labelWindowPosition.y + height - clickWindowPos.y >= 0)
+    ) {
+      return true;
+    }
+    return false;
+
+  }
+  // 在Cartesian3坐标系中进行判断可以被选中的label中哪个才应该是被选中的
+  selectedOrNot() {
+    // 在测试的时候发现，和label创建的顺序强相关。。。。
+    // 那这个方法就暂时不用了，直接取 labels 里的第一个
+  }
+  // 选中之后：
+  // 单击
+  click() {
+    this.vmInstance.$el.children[0].children[0].innerHTML = this.num;
+    // this.num += 11111;// for test
+    this.num = Number(this.num) + 11111;// for test
+  }
+  // 双击
+  dblClick() {
+    // 目前C段的需求是 双击替换 label 里的文字
+    // this.vmInstance.$el.innerHTML
+    // console.log('%c [ this.vmInstance.$el.innerHTML ]-249', 'font-size:13px; background:pink; color:#bf2c9f;', this.vmInstance.$el.innerHTML)
+    // console.log('%c [ this.vmInstance.$el.children ]-249', 'font-size:13px; background:pink; color:#bf2c9f;', this.vmInstance.$el.children[0].children[0].innerHTML)
+    this.vmInstance.$el.children[0].children[0].innerHTML = this.num;
+    this.num += '11111';
+    // this.vmInstance.$el.children[0].children[0].innerHTML = 'changed';
+  }
+  // 拖拽
+  drag() {
+
   }
 
   // 关于选中
