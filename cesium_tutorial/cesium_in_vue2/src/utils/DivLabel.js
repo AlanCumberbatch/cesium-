@@ -95,7 +95,17 @@ import Label from '../customComponents/label1.vue';// 只是有边框的 label
 // import Label from '../customComponents/label.vue';
 let WindowVm = Vue.extend(Label);// ???--- VUE官网中可以用Vue.extend + $mount，构造器来创建子类。
 
+function addClickListener(viewer,options) {
+  if (viewer && options) {
+    var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+  }
+
+
+}
+
 export default class DivLabel{
+  #handler
+
   constructor(val) {
     // this.show = true;
     this.viewer = val.viewer;
@@ -128,9 +138,17 @@ export default class DivLabel{
 
     // for test
     this.num = 11111;
+
+    this.init();
   }
 
-  // init(){}
+
+  init() {
+
+    // 注册 Cesium中的鼠标事件，并达到用一次删一次，然后重新添加的作用
+    // this.#handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
+    // addClickListener();
+  }
   // create(){}
   update(){}
   destroy() {
@@ -145,7 +163,6 @@ export default class DivLabel{
   addPostRender() {
     this.viewer.scene.postRender.addEventListener(this.postRender, this);
   }
-
   //场景渲染事件 实时更新窗口的位置 使其与笛卡尔坐标一致
   postRender() {
 
@@ -197,6 +214,7 @@ export default class DivLabel{
       this.vmInstance.$el.style.display = "none";
     }
   }
+
 
   setColor() {
     // console.log('%c [ this.vmInstance.$el ]-149', 'font-size:13px; background:pink; color:#bf2c9f;', this.vmInstance.$el.children[0])//这里设置style.color
@@ -277,6 +295,9 @@ export default class DivLabel{
   drag() {
 
   }
+
+
+
 
   // 关于选中
   // 选中之后

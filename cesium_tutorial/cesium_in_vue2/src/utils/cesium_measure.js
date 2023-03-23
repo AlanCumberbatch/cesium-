@@ -303,8 +303,8 @@ Cesium.Measure = (function (Cesium) {
                             font: '14px monospace',
                             horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
                             verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                            pixelOffset: new Cesium.Cartesian2(-20, -80) //left top --- 应该是考虑到了 terrain 了
-                            // pixelOffset: new Cesium.Cartesian2(-2, -8) //left top
+                            // pixelOffset: new Cesium.Cartesian2(-20, -80) //left top --- 应该是考虑到了 terrain 了
+                            pixelOffset: new Cesium.Cartesian2(-2, -8) //left top
                         }
                         $this._drawLayer.entities.add(_labelEntity2)
                     }
@@ -617,7 +617,63 @@ Cesium.Measure = (function (Cesium) {
                 this._drawLayer.entities.add(_tempLineEntity)
                 this._drawLayer.entities.add(_trianglesEntity)
             }
-        }
+        },
+
+        /**
+         * 方位角测量
+         * @param {*} options
+         */
+        /**
+         * 计算两个点的方位角度
+         * @param lng_a
+         * @param lat_a
+         * @param lng_b
+         * @param lat_b
+         * @return {number}
+         */
+        courseAngle(lng_a, lat_a, lng_b, lat_b) {
+
+            //以a点为原点建立局部坐标系（东方向为y轴,北方向为x轴,垂直于地面为z轴），得到一个局部坐标到世界坐标转换的变换矩阵
+            // const localToWorld_Matrix = Cesium.Transforms.northEastDownToFixedFrame(
+            //     new Cesium.Cartesian3.fromDegrees(lng_a, lat_a)
+            // );
+
+            //以a点为原点建立局部坐标系（东方向为x轴,北方向为y轴,垂直于地面为z轴），得到一个局部坐标到世界坐标转换的变换矩阵
+            const localToWorld_Matrix = Cesium.Transforms.eastNorthUpToFixedFrame(
+                new Cesium.Cartesian3.fromDegrees(lng_a, lat_a)
+            );
+            //求世界坐标到局部坐标的变换矩阵
+            const worldToLocal_Matrix = Cesium.Matrix4.inverse( localToWorld_Matrix, new Cesium.Matrix4() );
+            //a点在局部坐标的位置，其实就是局部坐标原点
+            const localPosition_A = Cesium.Matrix4.multiplyByPoint(
+                worldToLocal_Matrix,
+                new Cesium.Cartesian3.fromDegrees(lng_a, lat_a),
+                new Cesium.Cartesian3()
+            );
+            //B点在以A点为原点的局部的坐标位置
+            const localPosition_B = Cesium.Matrix4.multiplyByPoint(
+                worldToLocal_Matrix,
+                new Cesium.Cartesian3.fromDegrees(lng_b, lat_b),
+                new Cesium.Cartesian3()
+            );
+
+            //弧度
+            // const angle = Math.atan2(
+            //     localPosition_B.y - localPosition_A.y,
+            //     localPosition_B.x - localPosition_A.x
+            // );
+            //弧度
+            const angle = Math.atan2(
+                localPosition_B.x - localPosition_A.x,
+                localPosition_B.y - localPosition_A.y
+            );
+            //角度
+            let theta = angle * (180 / Math.PI);
+            if (theta < 0) {
+                theta = theta + 360;
+            }
+            return theta;
+        },
     }
     return _
 })(Cesium);
